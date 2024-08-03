@@ -1,16 +1,17 @@
 import java.util.ArrayList;
+import java.util.List;
 
 public class TaskManager {
-    public ArrayList<Task> tasks = new ArrayList<>();
+    public List<Task> tasks = new ArrayList<>();
 
     private int currentId = 0;
 
-    public ArrayList<Task> getAll() {
+    public List<Task> getAll() {
         return tasks;
     }
 
-    public ArrayList<Task> getAllTasks() {
-        ArrayList<Task> tmpTasks = new ArrayList<Task>();
+    public List<Task> getAllTasks() {
+        List<Task> tmpTasks = new ArrayList<Task>();
         for (Task task : tasks) {
             if (!((task instanceof Epic) || (task instanceof Subtask))) {
                 tmpTasks.add(task);
@@ -19,8 +20,8 @@ public class TaskManager {
         return tmpTasks;
     }
 
-    public ArrayList<Epic> getAllEpics() {
-        ArrayList<Epic> tmpEpics = new ArrayList<Epic>();
+    public List<Epic> getAllEpics() {
+        List<Epic> tmpEpics = new ArrayList<Epic>();
         for (Task task : tasks) {
             if ((task instanceof Epic)) {
                 tmpEpics.add((Epic) task);
@@ -29,8 +30,8 @@ public class TaskManager {
         return tmpEpics;
     }
 
-    public ArrayList<Subtask> getAllSubtasks() {
-        ArrayList<Subtask> tmpSubtasks = new ArrayList<Subtask>();
+    public List<Subtask> getAllSubtasks() {
+        List<Subtask> tmpSubtasks = new ArrayList<Subtask>();
         for (Task task : tasks) {
             if (task instanceof Subtask) {
                 tmpSubtasks.add((Subtask) task);
@@ -57,7 +58,7 @@ public class TaskManager {
 
     public Task getTaskByIdOrReturnNull(int id) {
         for (Task task : tasks) {
-            if (id == task.id) {
+            if (id == task.getId()) {
                 return task;
             } else {
                 System.out.println("Задачи с таким идентификатором нет");
@@ -67,14 +68,14 @@ public class TaskManager {
     }
 
     public void addNewTask(Task newTask) {
-        newTask.id = currentId;
+        newTask.setId(currentId);
         tasks.add(newTask);
         currentId++;
     }
 
     public void updateTask(Task updatedTask) {
         for (int i = 0; i < tasks.size(); i++) {
-            if (tasks.get(i).id == updatedTask.id) {
+            if (tasks.get(i).getId() == updatedTask.getId()) {
                 tasks.set(i, updatedTask);
                 break;
             } else if (i + 1 == tasks.size()) {

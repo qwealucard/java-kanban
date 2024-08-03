@@ -25,6 +25,11 @@
             return id;
         }
 
+        public void setId(int id) {
+            this.id = id;
+        }
+
+
         public void updateState(TaskState state) {
             this.state = state;
         }

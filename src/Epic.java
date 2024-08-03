@@ -1,28 +1,28 @@
 
     import java.util.ArrayList;
+    import java.util.List;
 
     public class Epic extends Task {
 
-        private ArrayList<Subtask> subtasks;
+        private List<Subtask> subtasks = new ArrayList<>();;
 
         public Epic(String name, String description, TaskState state) {
             super(name, description, state);
-            this.subtasks = new ArrayList<>();
         }
 
         public void addSubtask(Subtask subtask) {
             subtasks.add(subtask);
         }
 
-        public ArrayList<Subtask> getSubtasks() {
+        public List<Subtask> getSubtasks() {
             return subtasks;
         }
 
         @Override
         public void updateState(TaskState newState) {
-            if (newState == TaskState.DONE) {
+            if ((newState == TaskState.DONE) || (newState == TaskState.NEW)) {
                 for (Subtask task : subtasks) {
-                    if (task.state != TaskState.DONE) {
+                    if (task.state != newState) {
                         return;
                     }
                 }
