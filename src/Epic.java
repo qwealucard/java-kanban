@@ -27,7 +27,7 @@
                     }
                 }
             }
-            this.state = newState;
+               this.state = newState;
         }
     }
 

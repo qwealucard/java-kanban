@@ -2,13 +2,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TaskManager {
-    public List<Task> tasks = new ArrayList<>();
+
+    private List<Task> tasks = new ArrayList<>();
 
     private int currentId = 0;
-
-    public List<Task> getAll() {
-        return tasks;
-    }
 
     public List<Task> getAllTasks() {
         List<Task> tmpTasks = new ArrayList<Task>();
@@ -40,20 +37,26 @@ public class TaskManager {
         return tmpSubtasks;
     }
 
-    public void clearAll() {
-        tasks.clear();
-    }
-
     public void deleteAllTasks() {
         tasks.removeIf(task -> !((task instanceof Epic) || (task instanceof Subtask)));
     }
 
     public void deleteAllEpics() {
-        tasks.removeIf(task -> !(task instanceof Epic));
+        tasks.removeIf(task -> (task instanceof Subtask));
+        tasks.removeIf(task -> (task instanceof Epic));
+
     }
 
     public void deleteAllSubtasks() {
-        tasks.removeIf(task -> !(task instanceof Subtask));
+        tasks.removeIf(task -> {
+            if (task instanceof Subtask) {
+                ((Subtask) task).getParent().getSubtasks().remove(task);
+                ((Subtask) task).updateState(TaskState.NEW);
+                return true;
+            }
+            return false;
+    });
+
     }
 
     public Task getTaskByIdOrReturnNull(int id) {
@@ -86,5 +89,8 @@ public class TaskManager {
 
     public void deleteTaskById(int currentId) {
         tasks.removeIf(task -> task.id == currentId);
+    }
+    public List<Task> getTasks() {
+        return tasks;
     }
 }

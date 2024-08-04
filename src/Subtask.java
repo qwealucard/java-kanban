@@ -3,6 +3,7 @@ public class Subtask extends Task {
     public Subtask(String name, String description, TaskState state, Epic parentEpic) {
         super(name, description, state);
         parent = parentEpic;
+        parent.updateState(state);
     }
     @Override
     public void updateState(TaskState newState) {
