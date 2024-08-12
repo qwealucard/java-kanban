@@ -55,7 +55,7 @@ public class TaskManager {
                 return true;
             }
             return false;
-    });
+        });
 
     }
 
@@ -78,19 +78,41 @@ public class TaskManager {
 
     public void updateTask(Task updatedTask) {
         for (int i = 0; i < tasks.size(); i++) {
-            if (tasks.get(i).getId() == updatedTask.getId()) {
-                tasks.set(i, updatedTask);
+            Task tmpTask = tasks.get(i);
+            if (tmpTask.getId() == updatedTask.getId()) {
+                if (updatedTask instanceof Subtask) {
+                    ((Subtask) updatedTask).getParent().updateState(updatedTask.getState());
+                } else if (updatedTask instanceof Epic) {
+                    tmpTask.setName(updatedTask.getName());
+                    tmpTask.setDescription(updatedTask.getDescription());
+                } else {
+                    tasks.set(i, updatedTask);
+                }
                 break;
             } else if (i + 1 == tasks.size()) {
                 tasks.add(updatedTask);
             }
+
         }
     }
 
     public void deleteTaskById(int currentId) {
-        tasks.removeIf(task -> task.id == currentId);
+        Task taskToRemove = null;
+        for (Task task : tasks) {
+            if (task.getId() == currentId) {
+                taskToRemove = task;
+                if (task instanceof Subtask) {
+                    Subtask subtask = (Subtask) task;
+                    subtask.getParent().getSubtasks().remove(subtask);
+                    subtask.getParent().updateState(TaskState.NEW);
+                    subtask.getParent().updateState(TaskState.DONE);
+                }
+                break;
+            }
+        }
     }
-    public List<Task> getTasks() {
-        return tasks;
+
+    public List<Subtask> getAllSubtasksOfEpic(Epic epic) {
+        return epic.getSubtasks();
     }
 }
