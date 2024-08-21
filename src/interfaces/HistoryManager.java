@@ -1,4 +1,4 @@
-package interface_class;
+package interfaces;
 
 import tasks.Task;
 import java.util.List;

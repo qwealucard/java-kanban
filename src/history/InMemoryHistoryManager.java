@@ -4,17 +4,20 @@ import tasks.Task;
 import java.util.ArrayList;
 import java.util.List;
 
-public class InMemoryHistoryManager implements interface_class.HistoryManager {
-    private final static List<Task> viewedTaskHistory = new ArrayList<>();
+public class InMemoryHistoryManager implements interfaces.HistoryManager {
+    private final List<Task> viewedTaskHistory = new ArrayList<>();
 
     @Override
     public void add(Task task) {
         viewedTaskHistory.add(task);
+        if (viewedTaskHistory.size() > 10) {
+            viewedTaskHistory.removeFirst();
+        }
     }
 
     @Override
     public List<Task> getViewedTaskHistory() {
-        return new ArrayList<>(viewedTaskHistory);
+        return viewedTaskHistory;
     }
 
 }

@@ -1,4 +1,4 @@
-package interface_class;
+package interfaces;
 
 import tasks.Epic;
 import tasks.Subtask;
@@ -25,15 +25,16 @@ public interface TaskManager {
 
     Subtask getSubtaskByID(int id);
 
-    int addNewEpic(Epic newEpic);
+    int addNewTask(Epic newEpic);
 
-    int addNewSubtask(Subtask newSubtask);
+    int addNewTask(Subtask newSubtask);
 
     int addNewTask(Task newTask);
 
-    int updateEpic(Epic updatedEpic);
+    int updateTask(Epic updatedEpic);
 
-    int updateSubtask(Subtask updatedSubtask);
+
+    int updateTask(Subtask updatedSubtask);
 
     int updateTask(Task updatedTask);
 

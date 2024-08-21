@@ -1,7 +1,7 @@
 package memory;
 
 import history.InMemoryHistoryManager;
-import interface_class.TaskManager;
+import interfaces.TaskManager;
 import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
@@ -9,12 +9,13 @@ import tasks.Task;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class InMemoryTaskManager implements TaskManager {
-    private final HashMap<Integer, Task> tasks = new HashMap<>();
-    private final HashMap<Integer, Epic> epics = new HashMap<>();
-    private final HashMap<Integer, Subtask> subtasks = new HashMap<>();
-    InMemoryHistoryManager historyManager = new InMemoryHistoryManager();
+    private final Map<Integer, Task> tasks = new HashMap<>();
+    private final Map<Integer, Epic> epics = new HashMap<>();
+    private final Map<Integer, Subtask> subtasks = new HashMap<>();
+    private final InMemoryHistoryManager historyManager = new InMemoryHistoryManager();
     private int currentId = 0;
 
     @Override
@@ -56,9 +57,6 @@ public class InMemoryTaskManager implements TaskManager {
         Task task = tasks.get(id);
         if (task != null) {
             historyManager.add(task);
-            if (historyManager.getViewedTaskHistory().size() > 10) {
-                historyManager.getViewedTaskHistory().removeLast();
-            }
         }
         return task;
     }
@@ -68,9 +66,6 @@ public class InMemoryTaskManager implements TaskManager {
         Epic epic = epics.get(id);
         if (epic != null) {
             historyManager.add(epic);
-            if (historyManager.getViewedTaskHistory().size() > 10) {
-                historyManager.getViewedTaskHistory().removeLast();
-            }
         }
         return epic;
     }
@@ -80,15 +75,12 @@ public class InMemoryTaskManager implements TaskManager {
         Subtask subtask = subtasks.get(id);
         if (subtask != null) {
             historyManager.add(subtask);;
-            if (historyManager.getViewedTaskHistory().size() > 10) {
-                historyManager.getViewedTaskHistory().removeLast();
-            }
         }
         return subtask;
     }
 
     @Override
-    public int addNewEpic(Epic newEpic) {
+    public int addNewTask(Epic newEpic) {
         newEpic.setId(currentId);
         epics.put(newEpic.getId(), newEpic);
         currentId++;
@@ -96,7 +88,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public int addNewSubtask(Subtask newSubtask) {
+    public int addNewTask(Subtask newSubtask) {
         newSubtask.setId(currentId);
         newSubtask.getParent().addSubtask(newSubtask);
         subtasks.put(newSubtask.getId(), newSubtask);
@@ -106,21 +98,21 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public int addNewTask(Task newTask) {
-        // на всякий случай, защита от дурака
+       /* // на всякий случай, защита от дурака
         if (newTask instanceof Subtask) {
             return addNewSubtask((Subtask) newTask);
         } else if (newTask instanceof Epic) {
             return addNewEpic((Epic) newTask);
-        } else {
+        } else {*/
             currentId++;
             newTask.setId(currentId);
             tasks.put(newTask.getId(), newTask);
             return newTask.getId();
-        }
+
     }
 
     @Override
-    public int updateEpic(Epic updatedEpic) {
+    public int updateTask(Epic updatedEpic) {
         Epic tempLink = epics.get(updatedEpic.getId());
         tempLink.setName(updatedEpic.getName());
         tempLink.setDescription(updatedEpic.getDescription());
@@ -128,7 +120,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public int updateSubtask(Subtask updatedSubtask) {
+    public int updateTask(Subtask updatedSubtask) {
         Subtask tempLink = subtasks.get(updatedSubtask.getId());
         tempLink.setName(updatedSubtask.getName());
         tempLink.setDescription(updatedSubtask.getDescription());
@@ -139,17 +131,16 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public int updateTask(Task updatedTask) {
         // на всякий случай, защита от дурака
-        if (updatedTask instanceof Subtask) {
+        /*if (updatedTask instanceof Subtask) {
             return updateSubtask((Subtask) updatedTask);
         } else if (updatedTask instanceof Epic) {
             return updateEpic((Epic) updatedTask);
-        } else {
+        } else {*/
             Task tempLink = tasks.get(updatedTask.getId());
             tempLink.setName(updatedTask.getName());
             tempLink.setDescription(updatedTask.getDescription());
             tempLink.updateState(updatedTask.getState());
             return tempLink.getId();
-        }
     }
 
     @Override
@@ -181,6 +172,6 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public List<Task> getHistory() {
-        return new ArrayList<Task>(historyManager.getViewedTaskHistory());
+        return historyManager.getViewedTaskHistory();
     }
 }

@@ -1,6 +1,6 @@
 package tests;
 
-import interface_class.TaskManager;
+import interfaces.TaskManager;
 import memory.InMemoryTaskManager;
 import org.junit.Test;
 import states.TaskState;
