@@ -44,6 +44,10 @@ public class Task {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public String toString() {
+        return "Task: " + name + " - " + description + " - " + state;
+    }
 }
 
 
