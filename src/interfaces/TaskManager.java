@@ -35,7 +35,6 @@ public interface TaskManager {
 
     int updateTask(Epic updatedEpic);
 
-
     int updateTask(Subtask updatedSubtask);
 
     int updateTask(Task updatedTask);
