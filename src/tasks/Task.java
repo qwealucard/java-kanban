@@ -1,6 +1,7 @@
 package tasks;
 
 import states.TaskState;
+
 public class Task {
     protected String name;
     protected String description;
