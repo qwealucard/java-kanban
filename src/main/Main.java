@@ -1,8 +1,11 @@
 package main;
+import history.InMemoryHistoryManager;
 import memory.InMemoryTaskManager;
 import states.TaskState;
 import tasks.*;
 import interfaces.*;
+
+import java.util.Map;
 
 public class Main {
     public static void main(String[] args) {
@@ -20,6 +23,7 @@ public class Main {
         Epic epic1 = new Epic("Name", "test", TaskState.NEW);
         Subtask subtask1 = new Subtask("Name", "test", TaskState.NEW, epic1);
         TaskManager manager = new InMemoryTaskManager();
+        InMemoryHistoryManager history = new InMemoryHistoryManager();
         manager.addNewTask(task1);
         manager.addNewTask(task2);
         manager.addNewTask(task3);
@@ -44,10 +48,10 @@ public class Main {
         manager.getTaskByID(9);
         manager.getTaskByID(10);
         manager.getTaskByID(11);
-        printAllTasks(manager);
+        printAllTasks(manager, history);
     }
 
-    private static void printAllTasks(TaskManager manager) {
+    private static void printAllTasks(TaskManager manager, HistoryManager history) {
         System.out.println("Задачи:");
         for (Task task : manager.getAllTasks()) {
             System.out.println(task);
@@ -68,8 +72,9 @@ public class Main {
         }
 
         System.out.println("История:");
-        for (Task task : manager.getHistory()) {
-            System.out.println(task);
+        Map<Integer, InMemoryHistoryManager.TaskNode> hist = manager.getHistory();
+        for (InMemoryHistoryManager.TaskNode taskNode : hist.values()) {
+            System.out.println(taskNode.getTask());
         }
     }
 }

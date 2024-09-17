@@ -8,38 +8,47 @@ import org.junit.Test;
 import states.TaskState;
 import tasks.Task;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class InMemoryHistoryManagerTest {
     @Test
-    public void testAddToHistory() {
-        HistoryManager historyManager = new InMemoryHistoryManager();
-        Task task = new Task("Task 1", "Description 1", TaskState.NEW);
+    public void testAddTaskAndNodeMap() {
+        InMemoryTaskManager taskManager = new InMemoryTaskManager();
+        Task task1 = new Task("Task 1", "Description 1", TaskState.NEW);
+        Task task2 = new Task("Task 2", "Description 2", TaskState.IN_PROGRESS);
 
-        historyManager.add(task);
+        taskManager.addNewTask(task1);
+        taskManager.addNewTask(task2);
 
-        final List<Task> history = historyManager.getViewedTaskHistory();
-
-        assertNotNull(history);
-        assertEquals("Размер истории должен быть 1", 1, history.size());
+        Map<Integer, InMemoryHistoryManager.TaskNode> nodeMap = taskManager.getHistoryManager().getNodeMap();
+        assertNotNull(nodeMap);
+        assertEquals(2, nodeMap.size());
+        assertTrue(nodeMap.containsKey(task1.getId()));
+        assertTrue(nodeMap.containsKey(task2.getId()));
     }
 
     @Test
-    public void testTaskVersioningInHistoryManager() {
-        InMemoryHistoryManager historyManager = new InMemoryHistoryManager();
-        Task originalTask = new Task("Задача", "Описание", TaskState.NEW);
-        historyManager.add(originalTask);
+    public void testRemoveTaskFromHistory() {
 
-        Task modifiedTask = new Task(originalTask.getName(), originalTask.getDescription(), originalTask.getState());
-        modifiedTask.setDescription("Измененное описание");
-        historyManager.add(modifiedTask);
+        InMemoryTaskManager taskManager = new InMemoryTaskManager();
 
-        Task modifiedVersion = historyManager.getViewedTaskHistory().getFirst();
+        Task task1 = new Task("Task 1", "Description 1", TaskState.NEW);
+        Task task2 = new Task("Task 2", "Description 2", TaskState.IN_PROGRESS);
 
-        assertEquals("Описание", modifiedVersion.getDescription());
-        assertEquals(TaskState.NEW, modifiedTask.getState());
+        taskManager.addNewTask(task1);
+        taskManager.addNewTask(task2);
+
+        taskManager.getHistoryManager().removeHistory(task2.getId());
+
+        Map<Integer, InMemoryHistoryManager.TaskNode> history = taskManager.getHistoryManager().getNodeMap();
+
+        assertNotNull(history);
+        assertEquals(1, history.size());
     }
 }

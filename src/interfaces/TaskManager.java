@@ -1,10 +1,13 @@
 package interfaces;
 
+import history.InMemoryHistoryManager;
+import memory.InMemoryTaskManager;
 import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
 
 import java.util.List;
+import java.util.Map;
 
 public interface TaskManager {
     List<Task> getAllTasks();
@@ -46,5 +49,5 @@ public interface TaskManager {
 
     List<Subtask> getSubtasksByEpic(Epic epic);
 
-    List<Task> getHistory();
+    Map<Integer, InMemoryHistoryManager.TaskNode> getHistory();
 }

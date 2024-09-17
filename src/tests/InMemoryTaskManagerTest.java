@@ -62,7 +62,7 @@ public class InMemoryTaskManagerTest {
         Task task1 = new Task("Task 1", "Description 1", TaskState.NEW);
         taskManager.addNewTask(task1);
 
-        Task retrievedTask = taskManager.getTaskByID(1);
+        Task retrievedTask = taskManager.getTaskByID(0);
 
         assertNotNull(retrievedTask);
         assertEquals("Идентификатор задачи должен совпадать", 1, retrievedTask.getId());
