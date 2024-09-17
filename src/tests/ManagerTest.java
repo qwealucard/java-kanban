@@ -1,8 +1,6 @@
 package tests;
 
-import history.InMemoryHistoryManager;
 import interfaces.*;
-import memory.InMemoryTaskManager;
 import org.junit.Test;
 import utils.Manager;
 

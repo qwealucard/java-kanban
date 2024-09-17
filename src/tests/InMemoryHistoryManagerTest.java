@@ -1,15 +1,11 @@
 package tests;
 
 import history.InMemoryHistoryManager;
-import interfaces.HistoryManager;
-import interfaces.TaskManager;
 import memory.InMemoryTaskManager;
 import org.junit.Test;
 import states.TaskState;
 import tasks.Task;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
