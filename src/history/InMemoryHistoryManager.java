@@ -1,15 +1,15 @@
 package history;
 
 import tasks.Task;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+
+import java.util.*;
 
 public class InMemoryHistoryManager implements interfaces.HistoryManager {
 
     private TaskNode first;
     private TaskNode last;
     private Map<Integer, TaskNode> nodeMap;
+    private List<Task> historyList = new ArrayList<>();
 
     public InMemoryHistoryManager() {
         this.first = null;
@@ -51,10 +51,6 @@ public class InMemoryHistoryManager implements interfaces.HistoryManager {
             next.prev = prev;
             node.next = null;
         }
-        int taskId = node.task.getId();
-        if (nodeMap.get(taskId) == node) {
-            nodeMap.put(taskId, next);
-        }
     }
 
     @Override
@@ -73,6 +69,7 @@ public class InMemoryHistoryManager implements interfaces.HistoryManager {
         }
         last = newNode;
         nodeMap.put(taskId, newNode);
+        historyList.add(task);
     }
 
     @Override
@@ -81,12 +78,16 @@ public class InMemoryHistoryManager implements interfaces.HistoryManager {
         if (node != null) {
             removeNode(node);
             nodeMap.remove(id);
+            historyList.removeIf(task -> task.getId() == id);
         }
     }
 
-    @Override
     public Map<Integer, TaskNode> getNodeMap() {
         return nodeMap;
+    }
+
+    public List<Task> getHistoryList() {
+        return historyList;
     }
 
     public static class TaskNode {

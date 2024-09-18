@@ -5,10 +5,11 @@ import states.TaskState;
 import tasks.*;
 import interfaces.*;
 
+import java.util.List;
 import java.util.Map;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main (String[] args) {
         Task task1 = new Task("Name1", "test", TaskState.NEW);
         Task task2 = new Task("Name3", "test", TaskState.NEW);
         Task task3 = new Task("Name4", "test", TaskState.NEW);
@@ -51,7 +52,7 @@ public class Main {
         printAllTasks(manager, history);
     }
 
-    private static void printAllTasks(TaskManager manager, HistoryManager history) {
+    private static void printAllTasks (TaskManager manager, HistoryManager history) {
         System.out.println("Задачи:");
         for (Task task : manager.getAllTasks()) {
             System.out.println(task);
@@ -72,9 +73,7 @@ public class Main {
         }
 
         System.out.println("История:");
-        Map<Integer, InMemoryHistoryManager.TaskNode> hist = manager.getHistory();
-        for (InMemoryHistoryManager.TaskNode taskNode : hist.values()) {
-            System.out.println(taskNode.getTask());
-        }
+        List<Task> hist = manager.getHistory();
+        System.out.println(hist);
     }
 }
