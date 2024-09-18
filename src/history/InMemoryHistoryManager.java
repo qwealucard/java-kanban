@@ -11,13 +11,13 @@ public class InMemoryHistoryManager implements interfaces.HistoryManager {
     private TaskNode last;
     private Map<Integer, TaskNode> nodeMap;
 
-    public InMemoryHistoryManager() {
+    public InMemoryHistoryManager () {
         this.first = null;
         this.last = null;
         nodeMap = new HashMap<>();
     }
 
-    public void linkLast(Task task) {
+    public void linkLast (Task task) {
         TaskNode l = last;
         TaskNode newNode = new TaskNode(task, l, null);
         last = newNode;
@@ -28,7 +28,7 @@ public class InMemoryHistoryManager implements interfaces.HistoryManager {
         }
     }
 
-    public ArrayList<Task> getTasks() {
+    public ArrayList<Task> getTasks () {
         ArrayList<Task> tasks = new ArrayList<>();
         for (TaskNode x = first; x != null; x = x.next) {
             tasks.add(x.task);
@@ -36,7 +36,7 @@ public class InMemoryHistoryManager implements interfaces.HistoryManager {
         return tasks;
     }
 
-    public void removeNode(TaskNode node) {
+    public void removeNode (TaskNode node) {
         TaskNode prev = node.prev;
         TaskNode next = node.next;
         if (prev == null) {
@@ -58,7 +58,7 @@ public class InMemoryHistoryManager implements interfaces.HistoryManager {
     }
 
     @Override
-    public void addToHistory(Task task) {
+    public void addToHistory (Task task) {
         int taskId = task.getId();
         TaskNode existingNode = nodeMap.get(taskId);
         TaskNode newNode = new TaskNode(task, last, null);
@@ -76,7 +76,7 @@ public class InMemoryHistoryManager implements interfaces.HistoryManager {
     }
 
     @Override
-    public void removeHistory(int id) {
+    public void removeHistory (int id) {
         TaskNode node = nodeMap.get(id);
         if (node != null) {
             removeNode(node);
@@ -85,7 +85,7 @@ public class InMemoryHistoryManager implements interfaces.HistoryManager {
     }
 
     @Override
-    public Map<Integer, TaskNode> getNodeMap() {
+    public Map<Integer, TaskNode> getNodeMap () {
         return nodeMap;
     }
 
@@ -95,15 +95,16 @@ public class InMemoryHistoryManager implements interfaces.HistoryManager {
         TaskNode prev;
         TaskNode next;
 
-        public TaskNode(Task task, TaskNode prev, TaskNode next) {
+        public TaskNode (Task task, TaskNode prev, TaskNode next) {
             this.task = task;
             this.prev = prev;
             this.next = next;
         }
-        public Task getTask() {
+
+        public Task getTask () {
             return task;
         }
     }
-
 }
+
 
