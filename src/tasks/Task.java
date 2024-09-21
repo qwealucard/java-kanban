@@ -1,6 +1,5 @@
 package tasks;
 
-import history.InMemoryHistoryManager;
 import states.TaskState;
 
 public class Task {
@@ -9,37 +8,37 @@ public class Task {
     protected TaskState state;
     protected int id;
 
-    public Task (String name, String description, TaskState state) {
+    public Task(String name, String description, TaskState state) {
         this.name = name;
         this.description = description;
         this.state = state;
     }
 
-    public void updateState (TaskState newState) {
+    public void updateState(TaskState newState) {
         state = newState;
     }
 
-    public String getName () {
+    public String getName() {
         return name;
     }
 
-    public String getDescription () {
+    public String getDescription() {
         return description;
     }
 
-    public TaskState getState () {
+    public TaskState getState() {
         return state;
     }
 
-    public int getId () {
+    public int getId() {
         return id;
     }
 
-    public void setId (int id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public void setName (String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
