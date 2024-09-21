@@ -1,15 +1,14 @@
 package main;
-import history.InMemoryHistoryManager;
+
 import memory.InMemoryTaskManager;
 import states.TaskState;
 import tasks.*;
 import interfaces.*;
 
 import java.util.List;
-import java.util.Map;
 
 public class Main {
-    public static void main (String[] args) {
+    public static void main(String[] args) {
         Task task1 = new Task("Name1", "test", TaskState.NEW);
         Task task2 = new Task("Name3", "test", TaskState.NEW);
         Task task3 = new Task("Name4", "test", TaskState.NEW);
@@ -24,7 +23,6 @@ public class Main {
         Epic epic1 = new Epic("Name", "test", TaskState.NEW);
         Subtask subtask1 = new Subtask("Name", "test", TaskState.NEW, epic1);
         TaskManager manager = new InMemoryTaskManager();
-        InMemoryHistoryManager history = new InMemoryHistoryManager();
         manager.addNewTask(task1);
         manager.addNewTask(task2);
         manager.addNewTask(task3);
@@ -49,10 +47,10 @@ public class Main {
         manager.getTaskByID(9);
         manager.getTaskByID(10);
         manager.getTaskByID(11);
-        printAllTasks(manager, history);
+        printAllTasks(manager);
     }
 
-    private static void printAllTasks (TaskManager manager, HistoryManager history) {
+    private static void printAllTasks(TaskManager manager) {
         System.out.println("Задачи:");
         for (Task task : manager.getAllTasks()) {
             System.out.println(task);
