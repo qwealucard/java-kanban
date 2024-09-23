@@ -2,10 +2,13 @@ package interfaces;
 
 import tasks.Task;
 
-public interface HistoryManager {
-    void linkLast(Task task);
+import java.util.List;
 
-    void addToHistory(Task task);
+public interface HistoryManager {
+
+    void add(Task task);
 
     void removeHistory(int id);
+
+    List<Task> getHistoryList();
 }

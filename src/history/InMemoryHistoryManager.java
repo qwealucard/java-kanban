@@ -17,18 +17,7 @@ public class InMemoryHistoryManager implements interfaces.HistoryManager {
         nodeMap = new HashMap<>();
     }
 
-    public void linkLast(Task task) {
-        TaskNode l = last;
-        TaskNode newNode = new TaskNode(task, l, null);
-        last = newNode;
-        if (l == null) {
-            first = newNode;
-        } else {
-            l.next = newNode;
-        }
-    }
-
-    public ArrayList<Task> getTasks() {
+    public List<Task> getTasks() {
         ArrayList<Task> tasks = new ArrayList<>();
         for (TaskNode x = first; x != null; x = x.next) {
             tasks.add(x.task);
@@ -36,25 +25,23 @@ public class InMemoryHistoryManager implements interfaces.HistoryManager {
         return tasks;
     }
 
-    public void removeNode(TaskNode node) {
+    private void removeNode(TaskNode node) {
         TaskNode prev = node.prev;
         TaskNode next = node.next;
         if (prev == null) {
             first = next;
         } else {
             prev.next = next;
-            node.prev = null;
         }
         if (next == null) {
             last = prev;
         } else {
             next.prev = prev;
-            node.next = null;
         }
     }
 
     @Override
-    public void addToHistory(Task task) {
+    public void add(Task task) {
         int taskId = task.getId();
         TaskNode existingNode = nodeMap.get(taskId);
         TaskNode newNode = new TaskNode(task, last, null);
@@ -76,9 +63,9 @@ public class InMemoryHistoryManager implements interfaces.HistoryManager {
     public void removeHistory(int id) {
         TaskNode node = nodeMap.get(id);
         if (node != null) {
-            removeNode(node);
             nodeMap.remove(id);
             historyList.removeIf(task -> task.getId() == id);
+            removeNode(node);
         }
     }
 
@@ -96,7 +83,7 @@ public class InMemoryHistoryManager implements interfaces.HistoryManager {
         TaskNode prev;
         TaskNode next;
 
-        public TaskNode(Task task, TaskNode prev, TaskNode next) {
+        private TaskNode(Task task, TaskNode prev, TaskNode next) {
             this.task = task;
             this.prev = prev;
             this.next = next;
