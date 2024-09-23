@@ -58,7 +58,7 @@ public class InMemoryHistoryManagerTest {
 
         historyManager.add(task1);
         historyManager.add(task2);
-        historyManager.removeHistory(1);
+        historyManager.removeHistory(0);
 
         List<Task> tasks = historyManager.getTasks();
         assertEquals(1, tasks.size());
