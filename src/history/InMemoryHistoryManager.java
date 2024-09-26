@@ -9,18 +9,19 @@ public class InMemoryHistoryManager implements interfaces.HistoryManager {
     private TaskNode first;
     private TaskNode last;
     private Map<Integer, TaskNode> nodeMap;
-    private List<Task> historyList = new ArrayList<>();
+    private List<Task> historyList;
 
     public InMemoryHistoryManager() {
         this.first = null;
         this.last = null;
         nodeMap = new HashMap<>();
+        historyList = new ArrayList<>();
     }
 
     public List<Task> getTasks() {
-        ArrayList<Task> tasks = new ArrayList<>();
-        for (TaskNode x = first; x != null; x = x.next) {
-            tasks.add(x.task);
+        List<Task> tasks = new ArrayList<>();
+        for (TaskNode node = first; node != null; node = node.next) {
+            tasks.add(node.task);
         }
         return tasks;
     }
@@ -46,13 +47,12 @@ public class InMemoryHistoryManager implements interfaces.HistoryManager {
         TaskNode existingNode = nodeMap.get(taskId);
         TaskNode newNode = new TaskNode(task, last, null);
         if (existingNode != null) {
-            removeNode(existingNode);
-            nodeMap.remove(taskId);
+            remove(taskId);
         }
-        if (last == null) {
-            first = newNode;
-        } else {
+        if (last != null) {
             last.next = newNode;
+        } else {
+            first = newNode;
         }
         last = newNode;
         nodeMap.put(taskId, newNode);
@@ -60,37 +60,29 @@ public class InMemoryHistoryManager implements interfaces.HistoryManager {
     }
 
     @Override
-    public void removeHistory(int id) {
+    public void remove (int id) {
         TaskNode node = nodeMap.get(id);
         if (node != null) {
-            nodeMap.remove(id);
-            historyList.removeIf(task -> task.getId() == id);
+            historyList.remove(id);
             removeNode(node);
+            nodeMap.remove(id);
         }
-    }
-
-    public Map<Integer, TaskNode> getNodeMap() {
-        return nodeMap;
     }
 
     public List<Task> getHistoryList() {
         return historyList;
     }
 
-    public static class TaskNode {
+    private static class TaskNode {
 
         Task task;
         TaskNode prev;
         TaskNode next;
 
-        private TaskNode(Task task, TaskNode prev, TaskNode next) {
+        public TaskNode(Task task, TaskNode prev, TaskNode next) {
             this.task = task;
             this.prev = prev;
             this.next = next;
-        }
-
-        public Task getTask() {
-            return task;
         }
     }
 }

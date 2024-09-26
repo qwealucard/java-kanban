@@ -74,8 +74,10 @@ public class InMemoryTaskManagerTest {
     @Test
     public void testDeleteAllTasks() {
         TaskManager taskManager = new InMemoryTaskManager();
-        taskManager.addNewTask(new Task("Task 1", "Description 1", TaskState.NEW));
-        taskManager.addNewTask(new Task("Task 2", "Description 2", TaskState.IN_PROGRESS));
+        Task task1 = new Task("Task 1", "Description 1", TaskState.NEW);
+        Task task2 = new Task("Task 2", "Description 2", TaskState.IN_PROGRESS);
+        taskManager.addNewTask(task1);
+        taskManager.addNewTask(task2);
 
         taskManager.deleteAllTasks();
 

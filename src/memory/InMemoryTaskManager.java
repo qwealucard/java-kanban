@@ -35,8 +35,10 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteAllTasks() {
-        for (Integer task : tasks.keySet()) {
-            historyManager.removeHistory(task);
+        List<Integer> taskId = new ArrayList<>(tasks.keySet());
+        for (int i = taskId.size() - 1; i >= 0; i--) {
+            historyManager.remove(taskId.get(i));
+            tasks.remove(taskId.get(i));
         }
         tasks.clear();
     }
@@ -44,7 +46,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteAllSubtasks() {
         for (Integer subtask : subtasks.keySet()) {
-            historyManager.removeHistory(subtask);
+            historyManager.remove(subtask);
         }
         subtasks.clear();
         for (Epic epic : epics.values()) {
@@ -56,7 +58,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void deleteAllEpics() {
         deleteAllSubtasks();
         for (Integer epic : epics.keySet()) {
-            historyManager.removeHistory(epic);
+            historyManager.remove(epic);
         }
         epics.clear();
     }
@@ -146,7 +148,7 @@ public class InMemoryTaskManager implements TaskManager {
     public Subtask deleteSubtaskById(int id) {
         Subtask tempLink = subtasks.remove(id);
         tempLink.getParent().removeSubtask(tempLink);
-        historyManager.removeHistory(id);
+        historyManager.remove(id);
         return tempLink;
     }
 
@@ -155,7 +157,7 @@ public class InMemoryTaskManager implements TaskManager {
         Epic tempLink = epics.remove(id);
         for (Subtask subtask : tempLink.getSubtasks()) {
             deleteSubtaskById(subtask.getId());
-            historyManager.removeHistory(id);
+            historyManager.remove(id);
         }
         return tempLink;
     }
@@ -163,17 +165,13 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Task deleteTaskById(int id) {
         Task tempLink = tasks.remove(id);
-        historyManager.removeHistory(id);
+        historyManager.remove(id);
         return tempLink;
     }
 
     @Override
     public List<Subtask> getSubtasksByEpic(Epic epic) {
         return epic.getSubtasks();
-    }
-
-    public InMemoryHistoryManager getHistoryManager() {
-        return historyManager;
     }
 
     @Override
