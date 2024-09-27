@@ -2,11 +2,11 @@ package test;
 
 import interfaces.TaskManager;
 import memory.InMemoryTaskManager;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import states.TaskState;
 import tasks.Task;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -21,7 +21,7 @@ public class InMemoryTaskManagerTest {
 
         Task taskInManager = taskManager.getTaskByID(originalTask.getId());
 
-        assertEquals("Задача в менеджере должна оставаться неизменной", originalTask, taskInManager);
+        Assertions.assertEquals(originalTask, taskInManager, "Задача в менеджере должна оставаться неизменной");
     }
 
     @Test
@@ -52,8 +52,8 @@ public class InMemoryTaskManagerTest {
         Task foundTask1 = taskManager.getTaskByID(task1.getId());
         Task foundTask2 = taskManager.getTaskByID(task2.getId());
 
-        assertEquals("Task 1 не найден по id", task1, foundTask1);
-        assertEquals("Task 2 не наден по id", task2, foundTask2);
+        Assertions.assertEquals(task1, foundTask1, "Task 1 не найден по id");
+        Assertions.assertEquals(task2, foundTask2, "Task 2 не наден по id");
     }
 
     @Test
@@ -65,10 +65,10 @@ public class InMemoryTaskManagerTest {
         Task retrievedTask = taskManager.getTaskByID(0);
 
         assertNotNull(retrievedTask);
-        assertEquals("Идентификатор задачи должен совпадать", 0, retrievedTask.getId());
-        assertEquals("Название задачи должно совпадать", "Task 1", retrievedTask.getName());
-        assertEquals("Описание задачи должно соответствовать", "Description 1", retrievedTask.getDescription());
-        assertEquals("Состояние задачи должно соответствовать", TaskState.NEW, retrievedTask.getState());
+        Assertions.assertEquals(0, retrievedTask.getId(), "Идентификатор задачи должен совпадать");
+        Assertions.assertEquals("Task 1", retrievedTask.getName(), "Название задачи должно совпадать");
+        Assertions.assertEquals("Description 1", retrievedTask.getDescription(), "Описание задачи должно соответствовать");
+        Assertions.assertEquals(TaskState.NEW, retrievedTask.getState(), "Состояние задачи должно соответствовать");
     }
 
     @Test
@@ -81,6 +81,6 @@ public class InMemoryTaskManagerTest {
 
         taskManager.deleteAllTasks();
 
-        assertEquals("После удаления в диспетчере задач не должно быть никаких задач", 0, taskManager.getAllTasks().size());
+        Assertions.assertEquals(0, taskManager.getAllTasks().size(), "После удаления в диспетчере задач не должно быть никаких задач");
     }
 }

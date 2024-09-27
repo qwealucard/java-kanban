@@ -1,10 +1,9 @@
 package test;
 
+import org.junit.jupiter.api.Assertions;
 import tasks.*;
 import states.TaskState;
-import org.junit.Test;
-
-import static org.junit.Assert.assertTrue;
+import org.junit.jupiter.api.Test;
 
 public class TaskTest {
     @Test
@@ -15,7 +14,7 @@ public class TaskTest {
         task1.setId(1);
         task2.setId(1);
 
-        assertTrue("Задачи должны быть одинаковыми по идентификатору", task1.getId() == task2.getId());
+        Assertions.assertTrue(task1.getId() == task2.getId(), "Задачи должны быть одинаковыми по идентификатору");
         ;
     }
 }

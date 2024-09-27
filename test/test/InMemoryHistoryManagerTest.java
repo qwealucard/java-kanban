@@ -1,13 +1,13 @@
 package test;
 
 import history.InMemoryHistoryManager;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import states.TaskState;
 import tasks.Task;
 
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class InMemoryHistoryManagerTest {
@@ -23,7 +23,7 @@ public class InMemoryHistoryManagerTest {
         historyManager.add(task2);
         List<Task> historyList1 = historyManager.getHistoryList();
         assertNotNull(historyList1);
-        assertEquals(2, historyList1.size());
+        Assertions.assertEquals(2, historyList1.size());
     }
 
     @Test
@@ -44,7 +44,7 @@ public class InMemoryHistoryManagerTest {
         List<Task> historyList1 = historyManager.getHistoryList();
 
         assertNotNull(historyList1);
-        assertEquals(1, historyList1.size());
+        Assertions.assertEquals(1, historyList1.size());
     }
 
     @Test
@@ -63,8 +63,8 @@ public class InMemoryHistoryManagerTest {
 
         List<Task> tasks = historyManager.getTasks();
 
-        assertEquals(1, tasks.size());
-        assertEquals(task2, tasks.get(0));
+        Assertions.assertEquals(1, tasks.size());
+        Assertions.assertEquals(task2, tasks.get(0));
     }
 
     @Test
@@ -86,8 +86,8 @@ public class InMemoryHistoryManagerTest {
 
         List<Task> tasks = historyManager.getTasks();
 
-        assertEquals(2, tasks.size());
-        assertEquals(task2, tasks.get(0));
+        Assertions.assertEquals(2, tasks.size());
+        Assertions.assertEquals(task2, tasks.get(0));
     }
 
     @Test
@@ -112,10 +112,10 @@ public class InMemoryHistoryManagerTest {
 
         List<Task> tasks = historyManager.getTasks();
 
-        assertEquals(3, tasks.size());
-        assertEquals(task1, tasks.get(0));
-        assertEquals(task2, tasks.get(1));
-        assertEquals(task4, tasks.get(2));
+        Assertions.assertEquals(3, tasks.size());
+        Assertions.assertEquals(task1, tasks.get(0));
+        Assertions.assertEquals(task2, tasks.get(1));
+        Assertions.assertEquals(task4, tasks.get(2));
     }
 
     @Test
@@ -130,8 +130,8 @@ public class InMemoryHistoryManagerTest {
 
         List<Task> tasks = historyManager.getTasks();
 
-        assertEquals(1, tasks.size());
-        assertEquals(task1, tasks.get(0));
+        Assertions.assertEquals(1, tasks.size());
+        Assertions.assertEquals(task1, tasks.get(0));
     }
 
     @Test
@@ -145,8 +145,8 @@ public class InMemoryHistoryManagerTest {
 
         List<Task> tasks = historyManager.getTasks();
 
-        assertEquals(1, tasks.size());
-        assertEquals(task1, tasks.get(0));
+        Assertions.assertEquals(1, tasks.size());
+        Assertions.assertEquals(task1, tasks.get(0));
     }
 
     @Test
@@ -162,6 +162,6 @@ public class InMemoryHistoryManagerTest {
 
         List<Task> tasks = historyManager.getTasks();
 
-        assertEquals(0, tasks.size());
+        Assertions.assertEquals(0, tasks.size());
     }
 }
