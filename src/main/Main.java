@@ -1,8 +1,11 @@
 package main;
+
 import memory.InMemoryTaskManager;
 import states.TaskState;
 import tasks.*;
 import interfaces.*;
+
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
@@ -68,8 +71,7 @@ public class Main {
         }
 
         System.out.println("История:");
-        for (Task task : manager.getHistory()) {
-            System.out.println(task);
-        }
+        List<Task> hist = manager.getHistory();
+        System.out.println(hist);
     }
 }

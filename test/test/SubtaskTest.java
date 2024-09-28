@@ -1,11 +1,10 @@
-package tests;
+package test;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import states.TaskState;
 import tasks.Epic;
 import tasks.Subtask;
-
-import static org.junit.Assert.assertTrue;
 
 public class SubtaskTest {
 
@@ -18,6 +17,6 @@ public class SubtaskTest {
         subtask1.setId(3);
         subtask2.setId(3);
 
-        assertTrue("Задачи должны быть одинаковыми по идентификатору", subtask1.getId() == subtask2.getId());
+        Assertions.assertTrue(subtask1.getId() == subtask2.getId(), "Задачи должны быть одинаковыми по идентификатору");
     }
 }

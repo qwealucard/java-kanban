@@ -1,10 +1,9 @@
-package tests;
+package test;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import states.TaskState;
 import tasks.Epic;
-
-import static org.junit.Assert.assertTrue;
 
 public class EpicTest {
     @Test
@@ -15,7 +14,7 @@ public class EpicTest {
         epic1.setId(2);
         epic2.setId(2);
 
-        assertTrue("Задачи должны быть одинаковыми по идентификатору", epic1.getId() == epic2.getId());
+        Assertions.assertTrue(epic1.getId() == epic2.getId(), "Задачи должны быть одинаковыми по идентификатору");
 
     }
 }
