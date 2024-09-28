@@ -9,13 +9,13 @@ public class InMemoryHistoryManager implements interfaces.HistoryManager {
     private TaskNode first;
     private TaskNode last;
     private Map<Integer, TaskNode> nodeMap;
-    private List<Task> historyList;
+    private final List<Task> viewedTaskHistory;
 
     public InMemoryHistoryManager() {
         this.first = null;
         this.last = null;
         nodeMap = new HashMap<>();
-        historyList = new ArrayList<>();
+        viewedTaskHistory = new ArrayList<>();
     }
 
     public List<Task> getTasks() {
@@ -56,21 +56,21 @@ public class InMemoryHistoryManager implements interfaces.HistoryManager {
         }
         last = newNode;
         nodeMap.put(taskId, newNode);
-        historyList.add(task);
+        viewedTaskHistory.add(task);
     }
 
     @Override
     public void remove(int id) {
         TaskNode node = nodeMap.get(id);
         if (node != null) {
-            historyList.remove(id);
+            viewedTaskHistory.remove(id);
             removeNode(node);
             nodeMap.remove(id);
         }
     }
 
-    public List<Task> getHistoryList() {
-        return historyList;
+    public List<Task> getViewedTaskHistory() {
+        return viewedTaskHistory;
     }
 
     private static class TaskNode {

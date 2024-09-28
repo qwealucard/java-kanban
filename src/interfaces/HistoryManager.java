@@ -10,5 +10,5 @@ public interface HistoryManager {
 
     void remove(int id);
 
-    List<Task> getHistoryList();
+    List<Task> getViewedTaskHistory();
 }

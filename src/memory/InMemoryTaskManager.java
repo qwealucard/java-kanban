@@ -176,6 +176,6 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public List<Task> getHistory() {
-        return historyManager.getHistoryList();
+        return historyManager.getViewedTaskHistory();
     }
 }

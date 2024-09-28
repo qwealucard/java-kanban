@@ -21,7 +21,7 @@ public class InMemoryHistoryManagerTest {
 
         historyManager.add(task1);
         historyManager.add(task2);
-        List<Task> historyList1 = historyManager.getHistoryList();
+        List<Task> historyList1 = historyManager.getViewedTaskHistory();
         assertNotNull(historyList1);
         Assertions.assertEquals(2, historyList1.size());
     }
@@ -41,7 +41,7 @@ public class InMemoryHistoryManagerTest {
 
         historyManager.remove(task2.getId());
 
-        List<Task> historyList1 = historyManager.getHistoryList();
+        List<Task> historyList1 = historyManager.getViewedTaskHistory();
 
         assertNotNull(historyList1);
         Assertions.assertEquals(1, historyList1.size());
