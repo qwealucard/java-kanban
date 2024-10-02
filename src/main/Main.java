@@ -11,7 +11,7 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) {
         Task task1 = new Task(0, TaskType.TASK,"Name1", TaskState.NEW, "description 1");
-        Epic epic1 = new Epic(1, TaskType.EPIC, "Epic1", TaskState.NEW, "description 2" );
+        Epic epic1 = new Epic(1, TaskType.EPIC, "Epic1", TaskState.NEW, "description 2");
 
         TaskManager manager = new InMemoryTaskManager();
         manager.addNewTask(task1);
@@ -33,13 +33,10 @@ public class Main {
                 System.out.println("--> " + epicsSubtasks);
             }
         }
-
         System.out.println("Подзадачи:");
-        for (Task subtask : manager.getAllSubtasks())
-        {
+        for (Task subtask : manager.getAllSubtasks()) {
             System.out.println(subtask);
         }
-
         System.out.println("История:");
         List<Task> hist = manager.getHistory();
         System.out.println(hist);
