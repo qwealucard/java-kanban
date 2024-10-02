@@ -29,9 +29,7 @@ public class InMemoryTaskManagerTest {
     public void testTaskIdConflict() {
         InMemoryTaskManager taskManager = new InMemoryTaskManager();
 
-        String specifiedId = "specifiedId";
         Task taskWithSpecifiedId = new Task(0, TaskType.TASK, "Task with specified id", TaskState.NEW, "Description 1");
-
         Task generatedIdTask =new Task(0, TaskType.TASK, "Task with generated id", TaskState.NEW, "Description 1");
 
         taskManager.addNewTask(taskWithSpecifiedId);

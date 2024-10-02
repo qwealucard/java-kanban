@@ -34,6 +34,10 @@ public class Task {
         return state;
     }
 
+    public TaskType getType() {
+        return type;
+    }
+
     public int getId() {
         return id;
     }
@@ -60,9 +64,8 @@ public class Task {
         int id = Integer.parseInt(values[0]);
         TaskType type = TaskType.valueOf(values[1]);
         String name = values[2];
-        String description = values[3];
-        TaskState state = TaskState.valueOf(values[4]);
-
+        TaskState state = TaskState.valueOf(values[3]);
+        String description = values[4];
         return new Task(id, type, name, state, description);
     }
 }

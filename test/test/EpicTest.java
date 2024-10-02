@@ -13,6 +13,5 @@ public class EpicTest {
         Epic epic2 = new Epic(2, TaskType.EPIC, "Epic 2", TaskState.NEW, "Description 1");
 
         Assertions.assertTrue(epic1.getId() == epic2.getId(), "Задачи должны быть одинаковыми по идентификатору");
-
     }
 }

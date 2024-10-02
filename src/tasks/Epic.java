@@ -55,16 +55,5 @@ public class Epic extends Task {
     public String toString() {
         return id + "," + type + "," + name + "," + state + "," + description + ",";
     }
-
-    public static Epic fromString(String value) {
-        String[] values = value.split(",");
-        int id = Integer.parseInt(values[0]);
-        TaskType type = TaskType.valueOf(values[1]);
-        String name = values[2];
-        String description = values[3];
-        TaskState state = TaskState.valueOf(values[4]);
-
-        return new Epic(id, type, name, state, description);
-    }
 }
 

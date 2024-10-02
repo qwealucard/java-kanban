@@ -12,7 +12,6 @@ public class Main {
     public static void main(String[] args) {
         Task task1 = new Task(0, TaskType.TASK,"Name1", TaskState.NEW, "description 1");
         Epic epic1 = new Epic(1, TaskType.EPIC, "Epic1", TaskState.NEW, "description 2" );
-        // изменить присваивание id(убрать из конструктора и попробовать геттерами взять их
 
         TaskManager manager = new InMemoryTaskManager();
         manager.addNewTask(task1);
@@ -36,8 +35,8 @@ public class Main {
         }
 
         System.out.println("Подзадачи:");
-        for (Task subtask : manager.getAllSubtasks()
-        ) {
+        for (Task subtask : manager.getAllSubtasks())
+        {
             System.out.println(subtask);
         }
 

@@ -8,19 +8,28 @@ import tasks.Task;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.List;
 
 public class FileBackedTaskManager extends InMemoryTaskManager implements TaskManager {
 
-    private File file;
+    private final File file;
 
     public FileBackedTaskManager(File file) {
         this.file = file;
     }
-//    InMemoryTaskManager manager = new InMemoryTaskManager();
+
+    public static void createFileHeader(File file) { //Использовать при создании конкретного файла
+        try {
+            List<String> header = new ArrayList<>();
+            header.add("id,type,name,status,description,epic");
+            Files.write(file.toPath(), header);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public void save() {
-
         try(BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
 
             for(Task task : getTasks().values()) {
@@ -35,31 +44,31 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
                 writer.write(subtask.toString());
                 writer.newLine();
             }
-            System.out.println("Tasks saved to file successfully.");
+            System.out.println("Задача сохранена в файл");
         } catch (IOException e) {
-            System.out.println("An error occurred while saving the tasks to file.");
+            System.out.println("При сохранении задачи в файл произошла ошибка");
             e.printStackTrace();
         }
     }
+
     public static FileBackedTaskManager loadFromFile(File file) {
         FileBackedTaskManager taskManager = new FileBackedTaskManager(file);
 
         try {
             List<String> lines = Files.readAllLines(file.toPath());
-            for (int i = 0; i < lines.size() - 1; i++) {
+            for (int i = 0; i < lines.size(); i++) {
                 String line = lines.get(i);
                 Task task = Task.fromString(line);
-                System.out.println("Загружена задача: " + task);
-
                 if (task instanceof Epic) {
-                    taskManager.addNewTask((Epic) task);
+                    taskManager.getEpics().put(task.getId(),(Epic) task);
                 } else if (task instanceof Subtask) {
-                    taskManager.addNewTask((Subtask) task);
+                    taskManager.getSubtasks().put(task.getId(), (Subtask) task);
                 } else {
-                    taskManager.addNewTask(task);
+                    taskManager.getTasks().put(task.getId(),task);
                 }
             }
         } catch (IOException e) {
+            System.out.println("При загрузке задач произошла ошибка");
             e.printStackTrace();
         }
         return taskManager;
