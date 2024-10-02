@@ -1,6 +1,6 @@
 package test;
 
-import SavedTask.TaskType;
+import savedTask.TaskType;
 import org.junit.jupiter.api.Assertions;
 import tasks.*;
 import states.TaskState;

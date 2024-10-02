@@ -1,6 +1,6 @@
 package tasks;
 
-import SavedTask.TaskType;
+import savedTask.TaskType;
 import states.TaskState;
 
 public class Task {

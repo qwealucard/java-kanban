@@ -1,6 +1,6 @@
 package main;
 
-import SavedTask.TaskType;
+import savedTask.TaskType;
 import memory.InMemoryTaskManager;
 import states.TaskState;
 import tasks.*;

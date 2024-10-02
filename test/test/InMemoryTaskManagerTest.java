@@ -1,6 +1,6 @@
 package test;
 
-import SavedTask.TaskType;
+import savedTask.TaskType;
 import interfaces.TaskManager;
 import memory.InMemoryTaskManager;
 import org.junit.jupiter.api.Assertions;

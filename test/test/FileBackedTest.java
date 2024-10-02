@@ -1,7 +1,7 @@
 package test;
 
-import SavedTask.FileBackedTaskManager;
-import SavedTask.TaskType;
+import savedTask.FileBackedTaskManager;
+import savedTask.TaskType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

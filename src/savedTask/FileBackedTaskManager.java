@@ -1,4 +1,4 @@
-package SavedTask;
+package savedTask;
 
 import interfaces.TaskManager;
 import memory.InMemoryTaskManager;
@@ -31,16 +31,15 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
 
     public void save() {
         try(BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-
-            for(Task task : getTasks().values()) {
+            for (Task task : getTasks().values()) {
                 writer.write(task.toString());
                 writer.newLine();
             }
-            for(Epic epic : getEpics().values()) {
+            for (Epic epic : getEpics().values()) {
                 writer.write(epic.toString());
                 writer.newLine();
             }
-            for(Subtask subtask : getSubtasks().values()) {
+            for (Subtask subtask : getSubtasks().values()) {
                 writer.write(subtask.toString());
                 writer.newLine();
             }
