@@ -1,5 +1,6 @@
 package memory;
 
+import SavedTask.FileBackedTaskManager;
 import history.InMemoryHistoryManager;
 import interfaces.TaskManager;
 import tasks.Epic;
@@ -91,82 +92,71 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public int addNewTask(Epic newEpic) {
+    public void addNewTask(Epic newEpic) {
         newEpic.setId(currentId);
         currentId++;
         epics.put(newEpic.getId(), newEpic);
         historyManager.add(newEpic);
-        return newEpic.getId();
     }
 
     @Override
-    public int addNewTask(Subtask newSubtask) {
+    public void addNewTask(Subtask newSubtask) {
         newSubtask.setId(currentId);
         currentId++;
         newSubtask.getParent().addSubtask(newSubtask);
         subtasks.put(newSubtask.getId(), newSubtask);
         historyManager.add(newSubtask);
-        return newSubtask.getId();
     }
 
     @Override
-    public int addNewTask(Task newTask) {
+    public void addNewTask(Task newTask) {
         newTask.setId(currentId);
         currentId++;
         tasks.put(newTask.getId(), newTask);
         historyManager.add(newTask);
-        return newTask.getId();
     }
 
     @Override
-    public int updateTask(Epic updatedEpic) {
+    public void updateTask(Epic updatedEpic) {
         Epic tempLink = epics.get(updatedEpic.getId());
         tempLink.setName(updatedEpic.getName());
         tempLink.setDescription(updatedEpic.getDescription());
-        return tempLink.getId();
     }
 
     @Override
-    public int updateTask(Subtask updatedSubtask) {
+    public void updateTask(Subtask updatedSubtask) {
         Subtask tempLink = subtasks.get(updatedSubtask.getId());
         tempLink.setName(updatedSubtask.getName());
         tempLink.setDescription(updatedSubtask.getDescription());
         tempLink.updateState(updatedSubtask.getState());
-        return tempLink.getId();
     }
 
     @Override
-    public int updateTask(Task updatedTask) {
+    public void updateTask(Task updatedTask) {
         Task tempLink = tasks.get(updatedTask.getId());
         tempLink.setName(updatedTask.getName());
         tempLink.setDescription(updatedTask.getDescription());
         tempLink.updateState(updatedTask.getState());
-        return tempLink.getId();
     }
 
     @Override
-    public Subtask deleteSubtaskById(int id) {
-        Subtask tempLink = subtasks.remove(id);
-        tempLink.getParent().removeSubtask(tempLink);
-        historyManager.remove(id);
-        return tempLink;
-    }
-
-    @Override
-    public Epic deleteEpicById(int id) {
-        Epic tempLink = epics.remove(id);
-        for (Subtask subtask : tempLink.getSubtasks()) {
-            deleteSubtaskById(subtask.getId());
+    public void deleteTaskById(int id) {
+        if (tasks.containsKey(id)) {
+            Task tempTask = tasks.remove(id);
             historyManager.remove(id);
+        } else if (epics.containsKey(id)) {
+            Epic tempEpic = epics.remove(id);
+            for (Subtask subtask : tempEpic.getSubtasks()) {
+                deleteTaskById(subtask.getId());
+            }
+            historyManager.remove(id);
+        } else if (subtasks.containsKey(id)) {
+            Subtask tempSubtask = subtasks.remove(id);
+            tempSubtask.getParent().removeSubtask(tempSubtask);
+            historyManager.remove(id);
+        } else {
+            System.out.println("Task or Epic or Subtask with id " + id + " not found");
         }
-        return tempLink;
-    }
-
-    @Override
-    public Task deleteTaskById(int id) {
-        Task tempLink = tasks.remove(id);
-        historyManager.remove(id);
-        return tempLink;
     }
 
     @Override
@@ -177,5 +167,17 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public List<Task> getHistory() {
         return historyManager.getViewedTaskHistory();
+    }
+
+    public Map<Integer, Task> getTasks() {
+        return tasks;
+    }
+
+    public Map<Integer, Epic> getEpics() {
+        return epics;
+    }
+
+    public Map<Integer, Subtask> getSubtasks() {
+        return subtasks;
     }
 }

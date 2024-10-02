@@ -1,5 +1,6 @@
 package tasks;
 
+import SavedTask.TaskType;
 import states.TaskState;
 
 public class Task {
@@ -7,11 +8,14 @@ public class Task {
     protected String description;
     protected TaskState state;
     protected int id;
+    protected TaskType type;
 
-    public Task(String name, String description, TaskState state) {
+    public Task(int id, TaskType type, String name, TaskState state, String description) {
+        this.id = id;
+        this.type = type;
         this.name = name;
-        this.description = description;
         this.state = state;
+        this.description = description;
     }
 
     public void updateState(TaskState newState) {
@@ -46,8 +50,20 @@ public class Task {
         this.description = description;
     }
 
+    @Override
     public String toString() {
-        return "Task: " + name + " - " + description + " - " + state;
+        return id + "," + type + "," + name + "," + state + "," + description;
+    }
+
+    public static Task fromString(String value) {
+        String[] values = value.split(",");
+        int id = Integer.parseInt(values[0]);
+        TaskType type = TaskType.valueOf(values[1]);
+        String name = values[2];
+        String description = values[3];
+        TaskState state = TaskState.valueOf(values[4]);
+
+        return new Task(id, type, name, state, description);
     }
 }
 

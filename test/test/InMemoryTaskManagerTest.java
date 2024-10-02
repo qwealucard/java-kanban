@@ -1,5 +1,6 @@
 package test;
 
+import SavedTask.TaskType;
 import interfaces.TaskManager;
 import memory.InMemoryTaskManager;
 import org.junit.jupiter.api.Assertions;
@@ -15,7 +16,7 @@ public class InMemoryTaskManagerTest {
     public void testTaskImmutability() {
         InMemoryTaskManager taskManager = new InMemoryTaskManager();
 
-        Task originalTask = new Task("Task", "Description", TaskState.NEW);
+        Task originalTask = new Task(0, TaskType.TASK, "Task 1", TaskState.NEW, "Description 1");
 
         taskManager.addNewTask(originalTask);
 
@@ -29,9 +30,9 @@ public class InMemoryTaskManagerTest {
         InMemoryTaskManager taskManager = new InMemoryTaskManager();
 
         String specifiedId = "specifiedId";
-        Task taskWithSpecifiedId = new Task(specifiedId, "Task with specified id", TaskState.NEW);
+        Task taskWithSpecifiedId = new Task(0, TaskType.TASK, "Task with specified id", TaskState.NEW, "Description 1");
 
-        Task generatedIdTask = new Task("Task 2", "Task with generated id", TaskState.IN_PROGRESS);
+        Task generatedIdTask =new Task(0, TaskType.TASK, "Task with generated id", TaskState.NEW, "Description 1");
 
         taskManager.addNewTask(taskWithSpecifiedId);
         taskManager.addNewTask(generatedIdTask);
@@ -43,8 +44,8 @@ public class InMemoryTaskManagerTest {
     public void testAddAndFindTask() {
         InMemoryTaskManager taskManager = new InMemoryTaskManager();
 
-        Task task1 = new Task("Task 1", "Description 1", TaskState.NEW);
-        Task task2 = new Task("Task 2", "Description 2", TaskState.IN_PROGRESS);
+        Task task1 = new Task(0, TaskType.TASK, "Task 1", TaskState.NEW, "Description 1");
+        Task task2 = new Task(1, TaskType.TASK, "Task 2", TaskState.NEW, "Description 2");
 
         taskManager.addNewTask(task1);
         taskManager.addNewTask(task2);
@@ -59,7 +60,7 @@ public class InMemoryTaskManagerTest {
     @Test
     public void testGetTaskByID() {
         TaskManager taskManager = new InMemoryTaskManager();
-        Task task1 = new Task("Task 1", "Description 1", TaskState.NEW);
+        Task task1 = new Task(0, TaskType.TASK, "Task 1", TaskState.NEW, "Description 1");
         taskManager.addNewTask(task1);
 
         Task retrievedTask = taskManager.getTaskByID(0);
@@ -74,8 +75,8 @@ public class InMemoryTaskManagerTest {
     @Test
     public void testDeleteAllTasks() {
         TaskManager taskManager = new InMemoryTaskManager();
-        Task task1 = new Task("Task 1", "Description 1", TaskState.NEW);
-        Task task2 = new Task("Task 2", "Description 2", TaskState.IN_PROGRESS);
+        Task task1 = new Task(0, TaskType.TASK, "Task 1", TaskState.NEW, "Description 1");
+        Task task2 = new Task(1, TaskType.TASK, "Task 2", TaskState.NEW, "Description 2");
         taskManager.addNewTask(task1);
         taskManager.addNewTask(task2);
 

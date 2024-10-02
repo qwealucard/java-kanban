@@ -25,23 +25,19 @@ public interface TaskManager {
 
     Subtask getSubtaskByID(int id);
 
-    int addNewTask(Epic newEpic);
+    void addNewTask(Epic newEpic);
 
-    int addNewTask(Subtask newSubtask);
+    void addNewTask(Subtask newSubtask);
 
-    int addNewTask(Task newTask);
+    void addNewTask(Task newTask);
 
-    int updateTask(Epic updatedEpic);
+    void updateTask(Epic updatedEpic);
 
-    int updateTask(Subtask updatedSubtask);
+    void updateTask(Subtask updatedSubtask);
 
-    int updateTask(Task updatedTask);
+    void updateTask(Task updatedTask);
 
-    Subtask deleteSubtaskById(int id);
-
-    Epic deleteEpicById(int id);
-
-    Task deleteTaskById(int id);
+    void deleteTaskById(int id);
 
     List<Subtask> getSubtasksByEpic(Epic epic);
 
