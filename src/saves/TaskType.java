@@ -1,4 +1,4 @@
-package savedTask;
+package saves;
 
 public enum TaskType {
     TASK,

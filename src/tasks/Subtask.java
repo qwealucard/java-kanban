@@ -1,6 +1,6 @@
 package tasks;
 
-import savedTask.TaskType;
+import saves.TaskType;
 import states.TaskState;
 
 public class Subtask extends Task {

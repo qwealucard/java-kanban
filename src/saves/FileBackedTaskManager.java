@@ -1,4 +1,4 @@
-package savedTask;
+package saves;
 
 import interfaces.TaskManager;
 import memory.InMemoryTaskManager;
@@ -30,7 +30,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
     }
 
     public void save() {
-        try(BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
             for (Task task : getTasks().values()) {
                 writer.write(task.toString());
                 writer.newLine();
