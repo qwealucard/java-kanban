@@ -1,4 +1,4 @@
-package saving_files;
+package savingfiles;
 
 public class ManagerSaveException extends Exception {
     public ManagerSaveException(String message, Throwable cause) {
