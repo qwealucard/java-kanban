@@ -1,6 +1,6 @@
 package test;
 
-import saves.TaskType;
+import saving_files.TaskType;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import states.TaskState;

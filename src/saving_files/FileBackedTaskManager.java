@@ -1,4 +1,4 @@
-package saves;
+package saving_files;
 
 import interfaces.TaskManager;
 import memory.InMemoryTaskManager;
@@ -29,28 +29,27 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
         }
     }
 
-    public void save() {
+    public void save() throws ManagerSaveException {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-            for (Task task : getTasks().values()) {
-                writer.write(task.toString());
-                writer.newLine();
-            }
-            for (Epic epic : getEpics().values()) {
-                writer.write(epic.toString());
-                writer.newLine();
-            }
-            for (Subtask subtask : getSubtasks().values()) {
-                writer.write(subtask.toString());
-                writer.newLine();
+            for (Task task : getAllTasks()) {
+                if (task instanceof Epic) {
+                    writer.write(task.toString());
+                    writer.newLine();
+                } else if (task instanceof Subtask) {
+                    writer.write(task.toString());
+                    writer.newLine();
+                } else {
+                    writer.write(task.toString());
+                    writer.newLine();
+                }
             }
             System.out.println("Задача сохранена в файл");
         } catch (IOException e) {
-            System.out.println("При сохранении задачи в файл произошла ошибка");
-            e.printStackTrace();
+            throw new ManagerSaveException("При сохранении задач в файл произошла ошибка", e);
         }
     }
 
-    public static FileBackedTaskManager loadFromFile(File file) {
+    public static FileBackedTaskManager loadFromFile(File file) throws ManagerSaveException {
         FileBackedTaskManager taskManager = new FileBackedTaskManager(file);
 
         try {
@@ -59,77 +58,91 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
                 String line = lines.get(i);
                 Task task = Task.fromString(line);
                 if (task instanceof Epic) {
-                    taskManager.getEpics().put(task.getId(),(Epic) task);
+                    taskManager.epics.put(task.getId(),(Epic) task);
                 } else if (task instanceof Subtask) {
-                    taskManager.getSubtasks().put(task.getId(), (Subtask) task);
+                    taskManager.subtasks.put(task.getId(), (Subtask) task);
                 } else {
-                    taskManager.getTasks().put(task.getId(),task);
+                    taskManager.tasks.put(task.getId(),task);
                 }
             }
         } catch (IOException e) {
-            System.out.println("При загрузке задач произошла ошибка");
-            e.printStackTrace();
+            throw new ManagerSaveException("При сохранении задач в файл произошла ошибка", e);
         }
         return taskManager;
     }
 
     @Override
-    public void deleteAllTasks() {
+    public void deleteAllTasks() throws ManagerSaveException {
         super.deleteAllTasks();
         save();
     }
 
     @Override
-    public void deleteAllSubtasks() {
+    public void deleteAllSubtasks() throws ManagerSaveException {
         super.deleteAllSubtasks();
         save();
     }
 
     @Override
-    public void deleteAllEpics() {
+    public void deleteAllEpics() throws ManagerSaveException {
         super.deleteAllEpics();
         save();
     }
 
     @Override
-    public void addNewTask(Task task) {
+    public int addNewTask(Task task) throws ManagerSaveException {
         super.addNewTask(task);
         save();
+        return task.getId();
     }
 
     @Override
-    public void addNewTask(Epic epic) {
+    public int addNewTask(Epic epic) throws ManagerSaveException {
         super.addNewTask(epic);
         save();
+        return epic.getId();
     }
 
     @Override
-    public void addNewTask(Subtask subtask) {
+    public int addNewTask(Subtask subtask) throws ManagerSaveException {
         super.addNewTask(subtask);
         save();
+        return subtask.getId();
     }
 
     @Override
-    public void updateTask(Epic epic) {
+    public void updateTask(Epic epic) throws ManagerSaveException {
         super.updateTask(epic);
         save();
     }
 
     @Override
-    public void updateTask(Subtask subtask) {
+    public void updateTask(Subtask subtask) throws ManagerSaveException {
         super.updateTask(subtask);
         save();
     }
 
     @Override
-    public void updateTask(Task task) {
+    public void updateTask(Task task) throws ManagerSaveException {
         super.updateTask(task);
         save();
     }
 
     @Override
-    public void deleteTaskById(int id) {
+    public void deleteTaskById(int id) throws ManagerSaveException {
         super.deleteTaskById(id);
+        save();
+    }
+
+    @Override
+    public void deleteEpicById(int id) throws ManagerSaveException {
+        super.deleteEpicById(id);
+        save();
+    }
+
+    @Override
+    public void deleteSubtaskById(int id) throws ManagerSaveException {
+        super.deleteSubtaskById(id);
         save();
     }
 }

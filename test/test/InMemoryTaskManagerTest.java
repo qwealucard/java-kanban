@@ -1,6 +1,7 @@
 package test;
 
-import saves.TaskType;
+import saving_files.ManagerSaveException;
+import saving_files.TaskType;
 import interfaces.TaskManager;
 import memory.InMemoryTaskManager;
 import org.junit.jupiter.api.Assertions;
@@ -13,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class InMemoryTaskManagerTest {
     @Test
-    public void testTaskImmutability() {
+    public void testTaskImmutability() throws ManagerSaveException {
         InMemoryTaskManager taskManager = new InMemoryTaskManager();
 
         Task originalTask = new Task(0, TaskType.TASK, "Task 1", TaskState.NEW, "Description 1");
@@ -26,7 +27,7 @@ public class InMemoryTaskManagerTest {
     }
 
     @Test
-    public void testTaskIdConflict() {
+    public void testTaskIdConflict() throws ManagerSaveException {
         InMemoryTaskManager taskManager = new InMemoryTaskManager();
 
         Task taskWithSpecifiedId = new Task(0, TaskType.TASK, "Task with specified id", TaskState.NEW, "Description 1");
@@ -39,7 +40,7 @@ public class InMemoryTaskManagerTest {
     }
 
     @Test
-    public void testAddAndFindTask() {
+    public void testAddAndFindTask() throws ManagerSaveException {
         InMemoryTaskManager taskManager = new InMemoryTaskManager();
 
         Task task1 = new Task(0, TaskType.TASK, "Task 1", TaskState.NEW, "Description 1");
@@ -56,7 +57,7 @@ public class InMemoryTaskManagerTest {
     }
 
     @Test
-    public void testGetTaskByID() {
+    public void testGetTaskByID() throws ManagerSaveException {
         TaskManager taskManager = new InMemoryTaskManager();
         Task task1 = new Task(0, TaskType.TASK, "Task 1", TaskState.NEW, "Description 1");
         taskManager.addNewTask(task1);
@@ -71,7 +72,7 @@ public class InMemoryTaskManagerTest {
     }
 
     @Test
-    public void testDeleteAllTasks() {
+    public void testDeleteAllTasks() throws ManagerSaveException {
         TaskManager taskManager = new InMemoryTaskManager();
         Task task1 = new Task(0, TaskType.TASK, "Task 1", TaskState.NEW, "Description 1");
         Task task2 = new Task(1, TaskType.TASK, "Task 2", TaskState.NEW, "Description 2");

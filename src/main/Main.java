@@ -1,6 +1,7 @@
 package main;
 
-import saves.TaskType;
+import saving_files.ManagerSaveException;
+import saving_files.TaskType;
 import memory.InMemoryTaskManager;
 import states.TaskState;
 import tasks.*;
@@ -9,7 +10,7 @@ import interfaces.*;
 import java.util.List;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ManagerSaveException {
         Task task1 = new Task(0, TaskType.TASK,"Name1", TaskState.NEW, "description 1");
         Epic epic1 = new Epic(1, TaskType.EPIC, "Epic1", TaskState.NEW, "description 2");
 

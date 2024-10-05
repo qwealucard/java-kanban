@@ -1,10 +1,10 @@
 package tasks;
 
-import saves.TaskType;
+import saving_files.TaskType;
 import states.TaskState;
 
 public class Subtask extends Task {
-    private static Epic parent;
+    private Epic parent;
 
     public Subtask(int id, TaskType type, String name, TaskState state,String description, Epic parent) {
         super(id, type, name, state, description);
