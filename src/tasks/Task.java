@@ -56,7 +56,7 @@ public class Task {
 
     @Override
     public String toString() {
-        return id + "," + type + "," + name + "," + state + "," + description;
+        return String.format("%d,%s,%s,%s,%s", id, type, name, state, description);
     }
 
     public static Task fromString(String value) {
@@ -66,7 +66,17 @@ public class Task {
         String name = values[2];
         TaskState state = TaskState.valueOf(values[3]);
         String description = values[4];
-        return new Task(id, type, name, state, description);
+
+        if (values.length > 5) {
+            int parentId = Integer.parseInt(values[5]);
+            return new Subtask(id, type, name, state, description, parentId);
+        } else {
+            if (type == TaskType.EPIC) {
+                return new Epic(id, type, name, state, description);
+            } else {
+                return new Task(id, type, name, state, description);
+            }
+        }
     }
 }
 

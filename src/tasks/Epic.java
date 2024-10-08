@@ -51,9 +51,20 @@ public class Epic extends Task {
         return subtasks;
     }
 
+    public static Epic fromString(String value) {
+        String[] values = value.split(",");
+        System.out.println(values.length);
+        int id = Integer.parseInt(values[0]);
+        TaskType type = TaskType.valueOf(values[1]);
+        String name = values[2];
+        TaskState state = TaskState.valueOf(values[3]);
+        String description = values[4];
+        return new Epic(id, type, name, state, description);
+    }
+
     @Override
     public String toString() {
-        return id + "," + type + "," + name + "," + state + "," + description + ",";
+        return String.format("%d,%s,%s,%s,%s", id, type, name, state, description);
     }
 }
 

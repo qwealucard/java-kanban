@@ -104,7 +104,6 @@ public class InMemoryTaskManager implements TaskManager {
     public int addNewTask(Subtask newSubtask) throws ManagerSaveException {
         newSubtask.setId(currentId);
         currentId++;
-        newSubtask.getParent().addSubtask(newSubtask);
         subtasks.put(newSubtask.getId(), newSubtask);
         historyManager.add(newSubtask);
         return newSubtask.getId();
