@@ -116,11 +116,11 @@ public class FileBackedTest {
         FileBackedTaskManager loadedTaskManager = FileBackedTaskManager.loadFromFile(tempFile);
 
         assertEquals(1, loadedTaskManager.getAllTasks().size());
-        assertEquals(0, loadedTaskManager.getAllTasks().get(0).getId());
-        assertEquals(TaskType.TASK, loadedTaskManager.getAllTasks().get(0).getType());
-        assertEquals("Task 1", loadedTaskManager.getAllTasks().get(0).getName());
-        assertEquals(TaskState.NEW, loadedTaskManager.getAllTasks().get(0).getState());
-        assertEquals("Description 1", loadedTaskManager.getAllTasks().get(0).getDescription());
+        assertEquals(task.getId(), loadedTaskManager.getAllTasks().get(0).getId());
+        assertEquals(task.getType(), loadedTaskManager.getAllTasks().get(0).getType());
+        assertEquals(task.getName(), loadedTaskManager.getAllTasks().get(0).getName());
+        assertEquals(task.getState(), loadedTaskManager.getAllTasks().get(0).getState());
+        assertEquals(task.getDescription(), loadedTaskManager.getAllTasks().get(0).getDescription());
     }
 
     @Test
@@ -134,11 +134,11 @@ public class FileBackedTest {
 
         System.out.println(loadedTaskManager.getAllEpics());
 
-        assertEquals(0, loadedTaskManager.getAllEpics().get(0).getId());
-        assertEquals(TaskType.EPIC, loadedTaskManager.getAllEpics().get(0).getType());
-        assertEquals("Epic 1", loadedTaskManager.getAllEpics().get(0).getName());
-        assertEquals(TaskState.NEW, loadedTaskManager.getAllEpics().get(0).getState());
-        assertEquals("Description 1", loadedTaskManager.getAllEpics().get(0).getDescription());
+        assertEquals(epic.getId(), loadedTaskManager.getAllEpics().get(0).getId());
+        assertEquals(epic.getType(), loadedTaskManager.getAllEpics().get(0).getType());
+        assertEquals(epic.getName(), loadedTaskManager.getAllEpics().get(0).getName());
+        assertEquals(epic.getState(), loadedTaskManager.getAllEpics().get(0).getState());
+        assertEquals(epic.getDescription(), loadedTaskManager.getAllEpics().get(0).getDescription());
     }
 
     @Test
@@ -154,11 +154,12 @@ public class FileBackedTest {
 
         assertEquals(1, loadedTaskManager.getAllSubtasks().size());
         assertEquals(1, loadedTaskManager.getAllEpics().size());
-        assertEquals(0, loadedTaskManager.getAllSubtasks().get(0).getId());
-        assertEquals(TaskType.SUBTASK, loadedTaskManager.getAllSubtasks().get(0).getType());
-        assertEquals("Subtask 1", loadedTaskManager.getAllSubtasks().get(0).getName());
-        assertEquals(TaskState.NEW, loadedTaskManager.getAllSubtasks().get(0).getState());
-        assertEquals("Description 1", loadedTaskManager.getAllSubtasks().get(0).getDescription());
+        assertEquals(subtask.getId(), loadedTaskManager.getAllSubtasks().get(0).getId());
+        assertEquals(subtask.getType(), loadedTaskManager.getAllSubtasks().get(0).getType());
+        assertEquals(subtask.getName(), loadedTaskManager.getAllSubtasks().get(0).getName());
+        assertEquals(subtask.getState(), loadedTaskManager.getAllSubtasks().get(0).getState());
+        assertEquals(subtask.getDescription(), loadedTaskManager.getAllSubtasks().get(0).getDescription());
+        assertEquals(subtask.getParentId(), loadedTaskManager.getAllEpics().get(0).getId());
     }
 
     @Test
