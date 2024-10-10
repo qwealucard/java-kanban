@@ -1,5 +1,6 @@
 package tasks;
 
+import savingfiles.TaskType;
 import states.TaskState;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,8 +8,8 @@ import java.util.List;
 public class Epic extends Task {
     private List<Subtask> subtasks = new ArrayList<Subtask>();
 
-    public Epic(String name, String description, TaskState state) {
-        super(name, description, state);
+    public Epic(int id, TaskType type, String name, TaskState state, String description) {
+        super(id, type, name, state, description);
     }
 
     public void addSubtask(Subtask newSubtask) {
@@ -48,6 +49,22 @@ public class Epic extends Task {
 
     public List<Subtask> getSubtasks() {
         return subtasks;
+    }
+
+    public static Epic fromString(String value) {
+        String[] values = value.split(",");
+        System.out.println(values.length);
+        int id = Integer.parseInt(values[0]);
+        TaskType type = TaskType.valueOf(values[1]);
+        String name = values[2];
+        TaskState state = TaskState.valueOf(values[3]);
+        String description = values[4];
+        return new Epic(id, type, name, state, description);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%d,%s,%s,%s,%s", id, type, name, state, description);
     }
 }
 

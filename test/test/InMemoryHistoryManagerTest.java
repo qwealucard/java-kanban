@@ -1,5 +1,6 @@
 package test;
 
+import savingfiles.TaskType;
 import history.InMemoryHistoryManager;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -14,9 +15,9 @@ public class InMemoryHistoryManagerTest {
     @Test
     public void testAddTaskAndNodeMap() {
         InMemoryHistoryManager historyManager = new InMemoryHistoryManager();
-        Task task1 = new Task("Task 1", "Description 1", TaskState.NEW);
+        Task task1 = new Task(0, TaskType.TASK, "Task 1", TaskState.NEW, "Description 1");
+        Task task2 = new Task(1, TaskType.TASK, "Task 2", TaskState.NEW, "Description 2");
         task1.setId(0);
-        Task task2 = new Task("Task 2", "Description 2", TaskState.IN_PROGRESS);
         task2.setId(1);
 
         historyManager.add(task1);
@@ -31,9 +32,9 @@ public class InMemoryHistoryManagerTest {
 
         InMemoryHistoryManager historyManager = new InMemoryHistoryManager();
 
-        Task task1 = new Task("Task 1", "Description 1", TaskState.NEW);
+        Task task1 = new Task(0, TaskType.TASK, "Task 1", TaskState.NEW, "Description 1");
+        Task task2 = new Task(1, TaskType.TASK, "Task 2", TaskState.NEW, "Description 2");
         task1.setId(0);
-        Task task2 = new Task("Task 2", "Description 2", TaskState.IN_PROGRESS);
         task2.setId(1);
 
         historyManager.add(task1);
@@ -51,9 +52,9 @@ public class InMemoryHistoryManagerTest {
     public void testRemoveFirstNode() {
         InMemoryHistoryManager historyManager = new InMemoryHistoryManager();
 
-        Task task1 = new Task("Task 1", "Description 1", TaskState.NEW);
+        Task task1 = new Task(0, TaskType.TASK, "Task 1", TaskState.NEW, "Description 1");
+        Task task2 = new Task(1, TaskType.TASK, "Task 2", TaskState.NEW, "Description 2");
         task1.setId(0);
-        Task task2 = new Task("Task 2", "Description 2", TaskState.IN_PROGRESS);
         task2.setId(1);
 
         historyManager.add(task1);
@@ -71,11 +72,11 @@ public class InMemoryHistoryManagerTest {
     public void testRemoveLastNode() {
         InMemoryHistoryManager historyManager = new InMemoryHistoryManager();
 
-        Task task1 = new Task("Task 1", "Description 1", TaskState.NEW);
+        Task task1 = new Task(0, TaskType.TASK, "Task 1", TaskState.NEW, "Description 1");
+        Task task2 = new Task(1, TaskType.TASK, "Task 2", TaskState.NEW, "Description 2");
+        Task task3 = new Task(2, TaskType.TASK, "Task 3", TaskState.NEW, "Description 3");
         task1.setId(0);
-        Task task2 = new Task("Task 2", "Description 2", TaskState.IN_PROGRESS);
         task2.setId(1);
-        Task task3 = new Task("Task 3", "Description 3", TaskState.IN_PROGRESS);
         task3.setId(2);
 
         historyManager.add(task1);
@@ -94,13 +95,13 @@ public class InMemoryHistoryManagerTest {
     public void testRemoveIntermediateNode() {
         InMemoryHistoryManager historyManager = new InMemoryHistoryManager();
 
-        Task task1 = new Task("Task 1", "Description 1", TaskState.NEW);
+        Task task1 = new Task(0, TaskType.TASK, "Task 1", TaskState.NEW, "Description 1");
+        Task task2 = new Task(1, TaskType.TASK, "Task 2", TaskState.NEW, "Description 2");
+        Task task3 = new Task(2, TaskType.TASK, "Task 3", TaskState.NEW, "Description 3");
+        Task task4 = new Task(3, TaskType.TASK, "Task 4", TaskState.NEW, "Description 4");
         task1.setId(0);
-        Task task2 = new Task("Task 2", "Description 2", TaskState.IN_PROGRESS);
         task2.setId(1);
-        Task task3 = new Task("Task 3", "Description 3", TaskState.DONE);
         task3.setId(2);
-        Task task4 = new Task("Task 4", "Description 4", TaskState.NEW);
         task4.setId(3);
 
         historyManager.add(task1);
@@ -122,7 +123,7 @@ public class InMemoryHistoryManagerTest {
     public void testAddExistingTask() {
         InMemoryHistoryManager historyManager = new InMemoryHistoryManager();
 
-        Task task1 = new Task("Task 1", "Description 1", TaskState.NEW);
+        Task task1 = new Task(0, TaskType.TASK, "Task 1", TaskState.NEW, "Description 1");
         task1.setId(0);
 
         historyManager.add(task1);
@@ -138,7 +139,7 @@ public class InMemoryHistoryManagerTest {
     public void testAddFirstElementToEmptyHistory() {
         InMemoryHistoryManager historyManager = new InMemoryHistoryManager();
 
-        Task task1 = new Task("Task 1", "Description 1", TaskState.NEW);
+        Task task1 = new Task(0, TaskType.TASK, "Task 1", TaskState.NEW, "Description 1");
         task1.setId(0);
 
         historyManager.add(task1);
@@ -153,7 +154,7 @@ public class InMemoryHistoryManagerTest {
     public void testRemoveOnlyElement() {
         InMemoryHistoryManager historyManager = new InMemoryHistoryManager();
 
-        Task task1 = new Task("Task 1", "Description 1", TaskState.NEW);
+        Task task1 = new Task(0, TaskType.TASK, "Task 1", TaskState.NEW, "Description 1");
         task1.setId(0);
 
         historyManager.add(task1);

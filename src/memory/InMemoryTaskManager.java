@@ -12,9 +12,9 @@ import java.util.List;
 import java.util.Map;
 
 public class InMemoryTaskManager implements TaskManager {
-    private final Map<Integer, Task> tasks = new HashMap<>();
-    private final Map<Integer, Epic> epics = new HashMap<>();
-    private final Map<Integer, Subtask> subtasks = new HashMap<>();
+    protected final Map<Integer, Task> tasks = new HashMap<>();
+    protected final Map<Integer, Epic> epics = new HashMap<>();
+    protected final Map<Integer, Subtask> subtasks = new HashMap<>();
     private final InMemoryHistoryManager historyManager = new InMemoryHistoryManager();
     private int currentId = 0;
 
@@ -103,7 +103,6 @@ public class InMemoryTaskManager implements TaskManager {
     public int addNewTask(Subtask newSubtask) {
         newSubtask.setId(currentId);
         currentId++;
-        newSubtask.getParent().addSubtask(newSubtask);
         subtasks.put(newSubtask.getId(), newSubtask);
         historyManager.add(newSubtask);
         return newSubtask.getId();
@@ -119,54 +118,48 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public int updateTask(Epic updatedEpic) {
+    public void updateTask(Epic updatedEpic) {
         Epic tempLink = epics.get(updatedEpic.getId());
         tempLink.setName(updatedEpic.getName());
         tempLink.setDescription(updatedEpic.getDescription());
-        return tempLink.getId();
     }
 
     @Override
-    public int updateTask(Subtask updatedSubtask) {
+    public void updateTask(Subtask updatedSubtask) {
         Subtask tempLink = subtasks.get(updatedSubtask.getId());
         tempLink.setName(updatedSubtask.getName());
         tempLink.setDescription(updatedSubtask.getDescription());
         tempLink.updateState(updatedSubtask.getState());
-        return tempLink.getId();
     }
 
     @Override
-    public int updateTask(Task updatedTask) {
+    public void updateTask(Task updatedTask) {
         Task tempLink = tasks.get(updatedTask.getId());
         tempLink.setName(updatedTask.getName());
         tempLink.setDescription(updatedTask.getDescription());
         tempLink.updateState(updatedTask.getState());
-        return tempLink.getId();
     }
 
     @Override
-    public Subtask deleteSubtaskById(int id) {
-        Subtask tempLink = subtasks.remove(id);
-        tempLink.getParent().removeSubtask(tempLink);
+    public void deleteTaskById(int id) {
+        Task tempTask = tasks.remove(id);
         historyManager.remove(id);
-        return tempLink;
     }
 
     @Override
-    public Epic deleteEpicById(int id) {
-        Epic tempLink = epics.remove(id);
-        for (Subtask subtask : tempLink.getSubtasks()) {
+    public void deleteEpicById(int id) {
+        Epic tempEpic = epics.remove(id);
+        for (Subtask subtask : tempEpic.getSubtasks()) {
             deleteSubtaskById(subtask.getId());
-            historyManager.remove(id);
         }
-        return tempLink;
+        historyManager.remove(id);
     }
 
     @Override
-    public Task deleteTaskById(int id) {
-        Task tempLink = tasks.remove(id);
+    public void deleteSubtaskById(int id) {
+        Subtask tempSubtask = subtasks.remove(id);
+        tempSubtask.getParent().removeSubtask(tempSubtask);
         historyManager.remove(id);
-        return tempLink;
     }
 
     @Override

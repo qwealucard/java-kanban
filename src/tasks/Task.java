@@ -1,5 +1,6 @@
 package tasks;
 
+import savingfiles.TaskType;
 import states.TaskState;
 
 public class Task {
@@ -7,11 +8,14 @@ public class Task {
     protected String description;
     protected TaskState state;
     protected int id;
+    protected TaskType type;
 
-    public Task(String name, String description, TaskState state) {
+    public Task(int id, TaskType type, String name, TaskState state, String description) {
+        this.id = id;
+        this.type = type;
         this.name = name;
-        this.description = description;
         this.state = state;
+        this.description = description;
     }
 
     public void updateState(TaskState newState) {
@@ -30,6 +34,10 @@ public class Task {
         return state;
     }
 
+    public TaskType getType() {
+        return type;
+    }
+
     public int getId() {
         return id;
     }
@@ -46,8 +54,29 @@ public class Task {
         this.description = description;
     }
 
+    @Override
     public String toString() {
-        return "Task: " + name + " - " + description + " - " + state;
+        return String.format("%d,%s,%s,%s,%s", id, type, name, state, description);
+    }
+
+    public static Task fromString(String value) {
+        String[] values = value.split(",");
+        int id = Integer.parseInt(values[0]);
+        TaskType type = TaskType.valueOf(values[1]);
+        String name = values[2];
+        TaskState state = TaskState.valueOf(values[3]);
+        String description = values[4];
+
+        if (values.length > 5) {
+            int parentId = Integer.parseInt(values[5]);
+            return new Subtask(id, type, name, state, description, parentId);
+        } else {
+            if (type == TaskType.EPIC) {
+                return new Epic(id, type, name, state, description);
+            } else {
+                return new Task(id, type, name, state, description);
+            }
+        }
     }
 }
 
