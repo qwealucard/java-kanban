@@ -92,7 +92,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public int addNewTask(Epic newEpic) throws ManagerSaveException {
+    public int addNewTask(Epic newEpic) {
         newEpic.setId(currentId);
         currentId++;
         epics.put(newEpic.getId(), newEpic);
@@ -101,7 +101,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public int addNewTask(Subtask newSubtask) throws ManagerSaveException {
+    public int addNewTask(Subtask newSubtask) {
         newSubtask.setId(currentId);
         currentId++;
         subtasks.put(newSubtask.getId(), newSubtask);
@@ -110,7 +110,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public int addNewTask(Task newTask) throws ManagerSaveException {
+    public int addNewTask(Task newTask) {
         newTask.setId(currentId);
         currentId++;
         tasks.put(newTask.getId(), newTask);
@@ -119,14 +119,14 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void updateTask(Epic updatedEpic) throws ManagerSaveException {
+    public void updateTask(Epic updatedEpic) {
         Epic tempLink = epics.get(updatedEpic.getId());
         tempLink.setName(updatedEpic.getName());
         tempLink.setDescription(updatedEpic.getDescription());
     }
 
     @Override
-    public void updateTask(Subtask updatedSubtask) throws ManagerSaveException {
+    public void updateTask(Subtask updatedSubtask) {
         Subtask tempLink = subtasks.get(updatedSubtask.getId());
         tempLink.setName(updatedSubtask.getName());
         tempLink.setDescription(updatedSubtask.getDescription());
@@ -134,7 +134,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void updateTask(Task updatedTask) throws ManagerSaveException {
+    public void updateTask(Task updatedTask) {
         Task tempLink = tasks.get(updatedTask.getId());
         tempLink.setName(updatedTask.getName());
         tempLink.setDescription(updatedTask.getDescription());
@@ -142,13 +142,13 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void deleteTaskById(int id) throws ManagerSaveException {
+    public void deleteTaskById(int id) {
         Task tempTask = tasks.remove(id);
         historyManager.remove(id);
     }
 
     @Override
-    public void deleteEpicById(int id) throws ManagerSaveException {
+    public void deleteEpicById(int id) {
         Epic tempEpic = epics.remove(id);
         for (Subtask subtask : tempEpic.getSubtasks()) {
             deleteSubtaskById(subtask.getId());
@@ -157,7 +157,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void deleteSubtaskById(int id) throws ManagerSaveException {
+    public void deleteSubtaskById(int id) {
         Subtask tempSubtask = subtasks.remove(id);
         tempSubtask.getParent().removeSubtask(tempSubtask);
         historyManager.remove(id);
