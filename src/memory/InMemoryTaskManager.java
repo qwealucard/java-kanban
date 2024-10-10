@@ -35,7 +35,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void deleteAllTasks() throws ManagerSaveException {
+    public void deleteAllTasks() {
         List<Integer> taskId = new ArrayList<>(tasks.keySet());
         for (int i = taskId.size() - 1; i >= 0; i--) {
             historyManager.remove(taskId.get(i));
@@ -45,7 +45,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void deleteAllSubtasks() throws ManagerSaveException {
+    public void deleteAllSubtasks() {
         for (Integer subtask : subtasks.keySet()) {
             historyManager.remove(subtask);
         }
@@ -56,7 +56,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void deleteAllEpics() throws ManagerSaveException {
+    public void deleteAllEpics() {
         deleteAllSubtasks();
         for (Integer epic : epics.keySet()) {
             historyManager.remove(epic);
