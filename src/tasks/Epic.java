@@ -98,7 +98,7 @@ public class Epic extends Task {
 
     private LocalDateTime calculateEndTime() {
         endTime = getEarliestStartTime();
-        for(Subtask subtask : subtasks) {
+        for (Subtask subtask : subtasks) {
             endTime = endTime.plus(subtask.getDuration());
         }
         return endTime;
