@@ -33,14 +33,17 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
             for (Task task : tasks.values()) {
                 writer.write(task.toString());
+
                 writer.newLine();
             }
             for (Epic epic : epics.values()) {
                 writer.write(epic.toString());
+
                 writer.newLine();
             }
             for (Subtask subtask : subtasks.values()) {
                 writer.write(subtask.toString());
+
                 writer.newLine();
             }
             System.out.println("Задачи сохранены в файл");

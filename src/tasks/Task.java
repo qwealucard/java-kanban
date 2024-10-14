@@ -3,19 +3,37 @@ package tasks;
 import savingfiles.TaskType;
 import states.TaskState;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.PriorityQueue;
+
 public class Task {
     protected String name;
     protected String description;
     protected TaskState state;
     protected int id;
     protected TaskType type;
+    protected Duration duration;
+    protected LocalDateTime startTime;
+    private PriorityQueue<Subtask> prioritizedTasks;
 
-    public Task(int id, TaskType type, String name, TaskState state, String description) {
+    public Task(int id, TaskType type, String name, TaskState state, String description, Duration duration, LocalDateTime startTime) {
         this.id = id;
         this.type = type;
         this.name = name;
         this.state = state;
         this.description = description;
+        this.duration = duration;
+        this.startTime = startTime;
+        this.prioritizedTasks = new PriorityQueue<>(Comparator.comparing(Subtask::getStartTime));
+    }
+
+    public List<Subtask> getPrioritizedTasks() {
+        List<Subtask> tasks = new ArrayList<>(prioritizedTasks);
+        return tasks;
     }
 
     public void updateState(TaskState newState) {
@@ -54,9 +72,22 @@ public class Task {
         this.description = description;
     }
 
+    public LocalDateTime getEndTime() {
+        return startTime.plusMinutes(duration.toMinutes());
+    }
+
+    public Duration getDuration() {
+        return duration;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+
     @Override
     public String toString() {
-        return String.format("%d,%s,%s,%s,%s", id, type, name, state, description);
+        return String.format("%d,%s,%s,%s,%s,%s,%s", id, type, name, state, description, duration, startTime);
     }
 
     public static Task fromString(String value) {
@@ -66,15 +97,17 @@ public class Task {
         String name = values[2];
         TaskState state = TaskState.valueOf(values[3]);
         String description = values[4];
+        Duration duration = Duration.parse(values[5]);
+        LocalDateTime startTime = LocalDateTime.parse(values[6]);
 
-        if (values.length > 5) {
-            int parentId = Integer.parseInt(values[5]);
-            return new Subtask(id, type, name, state, description, parentId);
+        if (values.length > 7) {
+            int parentId = Integer.parseInt(values[7]);
+            return new Subtask(id, type, name, state, description, duration, startTime, parentId);
         } else {
             if (type == TaskType.EPIC) {
-                return new Epic(id, type, name, state, description);
+                return new Epic(id, type, name, state, description, duration, startTime);
             } else {
-                return new Task(id, type, name, state, description);
+                return new Task(id, type, name, state, description, duration, startTime);
             }
         }
     }
