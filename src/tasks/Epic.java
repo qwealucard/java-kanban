@@ -5,27 +5,24 @@ import states.TaskState;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.PriorityQueue;
+import java.util.*;
 
 public class Epic extends Task {
     private List<Subtask> subtasks;
     protected Duration duration;
     protected LocalDateTime startTime;
     private LocalDateTime endTime;
-    private PriorityQueue<Subtask> prioritizedTasks; //PriorityQueue удаляет и добавляет за log(n)
+    private TreeSet<Subtask> prioritizedTasks;
 
     public Epic(int id, TaskType type, String name, TaskState state, String description, Duration duration, LocalDateTime startTime) {
         super(id, type, name, state, description, duration, startTime);
         this.subtasks = new ArrayList<>();
-        this.prioritizedTasks = new PriorityQueue<>(Comparator.comparing(Subtask::getStartTime));
+        this.prioritizedTasks = new TreeSet<>(Comparator.comparing(Subtask::getStartTime));
         this.startTime = startTime;
         this.duration = duration;
     }
 
-    public List<Subtask> getPrioritizedTasks() {
+    public List<Subtask> getPrioritizedSubtasks() {
         List<Subtask> subtasks = new ArrayList<>(prioritizedTasks);
         return subtasks;
     }
@@ -41,11 +38,6 @@ public class Epic extends Task {
             subtasks.remove(subtask);
             updateState(TaskState.NEW);
         }
-    }
-
-    public void removeAllSubtasks() {
-        subtasks.clear();
-        updateState(TaskState.NEW);
     }
 
     private TaskState checkState() {
@@ -68,11 +60,6 @@ public class Epic extends Task {
 
     public List<Subtask> getSubtasks() {
         return subtasks;
-    }
-
-    public void updateFields() {
-        duration = calculateDuration();
-        startTime = calculateStartTime();
     }
 
     private Duration calculateDuration() {
@@ -119,19 +106,6 @@ public class Epic extends Task {
     @Override
     public String toString() {
         return String.format("%d,%s,%s,%s,%s,%s,%s", id, type, name, state, description, duration, startTime);
-    }
-
-    public static Epic fromString(String value) {
-        String[] values = value.split(",");
-        System.out.println(values.length);
-        int id = Integer.parseInt(values[0]);
-        TaskType type = TaskType.valueOf(values[1]);
-        String name = values[2];
-        TaskState state = TaskState.valueOf(values[3]);
-        String description = values[4];
-        Duration duration = Duration.parse(values[5]);
-        LocalDateTime startTime = LocalDateTime.parse(values[6]);
-        return new Epic(id, type, name, state, description, duration, startTime);
     }
 }
 

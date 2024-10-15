@@ -14,9 +14,9 @@ public class InMemoryTaskManager implements TaskManager {
     protected final Map<Integer, Epic> epics = new HashMap<>();
     protected final Map<Integer, Subtask> subtasks = new HashMap<>();
     private final InMemoryHistoryManager historyManager = new InMemoryHistoryManager();
+    private final List<Task> prioritizedTasks = new ArrayList<>();
     private int currentId = 0;
 
-    @Override
     public boolean isOverlapping(Task task1, Task task2) {
         LocalDateTime start1 = task1.getStartTime();
         LocalDateTime end1 = start1.plus(task1.getDuration());
@@ -27,12 +27,14 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public List<Task> getPrioritizedTasks() {
-        List<Task> prioritizedTasks = new ArrayList<>();
         prioritizedTasks.addAll(tasks.values());
         epics.values().stream()
-                        .flatMap(epic -> epic.getPrioritizedTasks().stream())
-                     .forEach(prioritizedTasks::add);
-        Collections.sort(prioritizedTasks, Comparator.comparing(Task::getStartTime));
+             .flatMap(epic -> epic.getPrioritizedSubtasks().stream())
+             .forEach(prioritizedTasks::add);
+        Set<Task> sortedTasks = new TreeSet<>(Comparator.comparing(Task::getStartTime));
+        sortedTasks.addAll(prioritizedTasks);
+        prioritizedTasks.clear();
+        prioritizedTasks.addAll(sortedTasks);
         return prioritizedTasks;
     }
 
@@ -59,6 +61,7 @@ public class InMemoryTaskManager implements TaskManager {
             tasks.remove(taskId.get(i));
         }
         tasks.clear();
+        getPrioritizedTasks().removeIf(task -> tasks.containsKey(task.getId()));
     }
 
     @Override
@@ -68,6 +71,7 @@ public class InMemoryTaskManager implements TaskManager {
         subtasks.keySet().stream()
                 .forEach(subtasks::remove);
         subtasks.clear();
+        getPrioritizedTasks().removeIf(task -> subtasks.containsKey(task.getId()));
     }
 
     @Override
@@ -78,6 +82,7 @@ public class InMemoryTaskManager implements TaskManager {
         epics.keySet().stream()
              .forEach(epics::remove);
         epics.clear();
+       getPrioritizedTasks().removeIf(task -> epics.containsKey(task.getId()) || subtasks.containsKey(task.getId()));
     }
 
     @Override
@@ -130,6 +135,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
         subtasks.put(newSubtask.getId(), newSubtask);
         historyManager.add(newSubtask);
+        prioritizedTasks.add(newSubtask);
         return newSubtask.getId();
     }
 
@@ -143,6 +149,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
         tasks.put(newTask.getId(), newTask);
         historyManager.add(newTask);
+        prioritizedTasks.add(newTask);
         return newTask.getId();
     }
 
@@ -151,6 +158,7 @@ public class InMemoryTaskManager implements TaskManager {
         Epic tempLink = epics.get(updatedEpic.getId());
         tempLink.setName(updatedEpic.getName());
         tempLink.setDescription(updatedEpic.getDescription());
+        updatePrioritizedTasks();
     }
 
     @Override
@@ -159,6 +167,7 @@ public class InMemoryTaskManager implements TaskManager {
         tempLink.setName(updatedSubtask.getName());
         tempLink.setDescription(updatedSubtask.getDescription());
         tempLink.updateState(updatedSubtask.getState());
+        updatePrioritizedTasks();
     }
 
     @Override
@@ -167,6 +176,19 @@ public class InMemoryTaskManager implements TaskManager {
         tempLink.setName(updatedTask.getName());
         tempLink.setDescription(updatedTask.getDescription());
         tempLink.updateState(updatedTask.getState());
+        updatePrioritizedTasks();
+    }
+
+    private void updatePrioritizedTasks() {
+        getPrioritizedTasks().clear();
+        getPrioritizedTasks().addAll(tasks.values());
+        epics.values().stream()
+             .flatMap(epic -> epic.getSubtasks().stream())
+             .forEach(getPrioritizedTasks()::add);
+        Set<Task> sortedTasks = new TreeSet<>(Comparator.comparing(Task::getStartTime));
+        sortedTasks.addAll(getPrioritizedTasks());
+        getPrioritizedTasks().clear();
+        getPrioritizedTasks().addAll(sortedTasks);
     }
 
     @Override

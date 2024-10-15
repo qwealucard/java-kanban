@@ -1,5 +1,3 @@
-package test;
-
 import savingfiles.TaskType;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

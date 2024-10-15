@@ -1,5 +1,3 @@
-package test;
-
 import savingfiles.TaskType;
 import history.InMemoryHistoryManager;
 import org.junit.jupiter.api.Assertions;

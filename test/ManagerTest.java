@@ -1,5 +1,3 @@
-package test;
-
 import interfaces.*;
 import org.junit.jupiter.api.Test;
 import utils.Manager;

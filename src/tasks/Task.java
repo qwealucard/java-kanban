@@ -5,10 +5,6 @@ import states.TaskState;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.PriorityQueue;
 
 public class Task {
     protected String name;
@@ -18,7 +14,6 @@ public class Task {
     protected TaskType type;
     protected Duration duration;
     protected LocalDateTime startTime;
-    private PriorityQueue<Subtask> prioritizedTasks;
 
     public Task(int id, TaskType type, String name, TaskState state, String description, Duration duration, LocalDateTime startTime) {
         this.id = id;
@@ -28,12 +23,6 @@ public class Task {
         this.description = description;
         this.duration = duration;
         this.startTime = startTime;
-        this.prioritizedTasks = new PriorityQueue<>(Comparator.comparing(Subtask::getStartTime));
-    }
-
-    public List<Subtask> getPrioritizedTasks() {
-        List<Subtask> tasks = new ArrayList<>(prioritizedTasks);
-        return tasks;
     }
 
     public void updateState(TaskState newState) {

@@ -10,8 +10,6 @@ public class Subtask extends Task {
 
     private Epic parent;
     private int parentId;
-    protected Duration duration;
-    protected LocalDateTime startTime;
 
     public Subtask(int id, TaskType type, String name, TaskState state,String description,Duration duration, LocalDateTime startTime, int parentId) {
         super(id, type, name, state, description, duration, startTime);
@@ -32,20 +30,6 @@ public class Subtask extends Task {
 
     public int getParentId() {
         return parentId;
-    }
-
-    public static Subtask fromString(String value) {
-        String[] values = value.split(",");
-        int id = Integer.parseInt(values[0]);
-        TaskType type = TaskType.valueOf(values[1]);
-        String name = values[2];
-        TaskState state = TaskState.valueOf(values[3]);
-        String description = values[4];
-        Duration duration = Duration.parse(values[5]);
-        LocalDateTime startTime = LocalDateTime.parse(values[6]);
-        int parentId = Integer.parseInt(values[7]);
-        Subtask subtask = new Subtask(id, type, name, state, description, duration, startTime, parentId);
-        return subtask;
     }
 
     public LocalDateTime getStartTime() {

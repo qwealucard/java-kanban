@@ -1,5 +1,3 @@
-package test;
-
 import savingfiles.ManagerSaveException;
 import savingfiles.TaskType;
 import interfaces.TaskManager;
@@ -104,7 +102,7 @@ public class InMemoryTaskManagerTest {
 
     @Test
     void testIsOverlapping_OverlappingTasks() {
-        TaskManager taskManager = new InMemoryTaskManager();
+        InMemoryTaskManager taskManager = new InMemoryTaskManager();
         LocalDateTime startTime1 = LocalDateTime.of(2023, 12, 1, 10, 0, 0);
         LocalDateTime startTime2 = LocalDateTime.of(2023, 12, 1, 11, 0, 0);
 
@@ -116,7 +114,7 @@ public class InMemoryTaskManagerTest {
 
     @Test
     void testIsOverlapping_NonOverlappingTasks() {
-        TaskManager taskManager = new InMemoryTaskManager();
+        InMemoryTaskManager taskManager = new InMemoryTaskManager();
         LocalDateTime startTime1 = LocalDateTime.of(2023, 12, 1, 10, 0, 0);
         LocalDateTime startTime2 = LocalDateTime.of(2023, 12, 1, 12, 0, 0);
 
