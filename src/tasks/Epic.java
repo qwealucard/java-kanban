@@ -8,34 +8,40 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 public class Epic extends Task {
-    private List<Subtask> subtasks;
-    private PriorityQueue<Subtask> prioritizedTasks;
+    private final List<Subtask> subtasks;
 
     public Epic(int id, TaskType type, String name, TaskState state, String description, Duration duration, LocalDateTime startTime) {
         super(id, type, name, state, description, duration, startTime);
         this.subtasks = new ArrayList<>();
-        this.prioritizedTasks = new PriorityQueue<>(Comparator.comparing(Subtask::getStartTime));
         this.startTime = startTime;
         this.duration = duration;
     }
 
+    private List<Subtask> updatePrioritizedSubtasks() {
+        if (subtasks == null) {
+            return new ArrayList<>();
+        }
+        List<Subtask> prioritizedSubtasks = new ArrayList<>(subtasks);
+        Collections.sort(prioritizedSubtasks, Comparator.comparing(Subtask::getStartTime));
+        return prioritizedSubtasks;
+    }
+
     public List<Subtask> getPrioritizedSubtasks() {
-        List<Subtask> subtasks = new ArrayList<>(prioritizedTasks);
-        return subtasks;
+        return updatePrioritizedSubtasks();
     }
 
     public void addNewTask(Subtask newSubtask) {
         subtasks.add(newSubtask);
         updateState(newSubtask.getState());
-        prioritizedTasks.add(newSubtask);
+        updatePrioritizedSubtasks();
     }
-
 
     public void removeSubtask(Subtask subtask) {
         if (subtasks.contains(subtask)) {
             subtasks.remove(subtask);
             updateState(TaskState.NEW);
         }
+        updatePrioritizedSubtasks();
     }
 
     private TaskState checkState() {

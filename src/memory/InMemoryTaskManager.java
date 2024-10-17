@@ -26,10 +26,9 @@ public class InMemoryTaskManager implements TaskManager {
         return (start1.isBefore(end2) && end1.isAfter(start2));
     }
 
-    private List<Task> addToPrioritizedTasks() {
-        List<Task> prioritizedTasks = new ArrayList<>();
+    private List<Task> updatePrioritizedTasks() {
+        prioritizedTasks.clear();
         prioritizedTasks.addAll(tasks.values());
-
         prioritizedTasks.addAll(epics.values().stream()
                                      .flatMap(epic -> epic.getPrioritizedSubtasks().stream())
                                      .collect(Collectors.toList()));
@@ -40,7 +39,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public List<Task> getPrioritizedTasks() {
-        return addToPrioritizedTasks();
+        return updatePrioritizedTasks();
     }
 
     @Override
@@ -136,7 +135,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
         subtasks.put(newSubtask.getId(), newSubtask);
         historyManager.add(newSubtask);
-        addToPrioritizedTasks();
+        updatePrioritizedTasks();
         return newSubtask.getId();
     }
 
@@ -150,7 +149,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
         tasks.put(newTask.getId(), newTask);
         historyManager.add(newTask);
-        addToPrioritizedTasks();
+        updatePrioritizedTasks();
         return newTask.getId();
     }
 
