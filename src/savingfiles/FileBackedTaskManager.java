@@ -67,7 +67,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
                     Subtask subtask = (Subtask) task;
                     Epic parentEpic = taskManager.epics.get(subtask.getParentId());
                     if (parentEpic != null) {
-                        parentEpic.addSubtask(subtask);
+                        parentEpic.addNewTask(subtask);
                     } else {
                         throw new RuntimeException("Эпик данного сабтаска не найден: " + subtask.getId());
                     }

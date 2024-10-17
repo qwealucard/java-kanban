@@ -8,6 +8,7 @@ import tasks.Task;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class InMemoryTaskManager implements TaskManager {
     protected final Map<Integer, Task> tasks = new HashMap<>();
@@ -25,17 +26,21 @@ public class InMemoryTaskManager implements TaskManager {
         return (start1.isBefore(end2) && end1.isAfter(start2));
     }
 
+    private List<Task> addToPrioritizedTasks() {
+        List<Task> prioritizedTasks = new ArrayList<>();
+        prioritizedTasks.addAll(tasks.values());
+
+        prioritizedTasks.addAll(epics.values().stream()
+                                     .flatMap(epic -> epic.getPrioritizedSubtasks().stream())
+                                     .collect(Collectors.toList()));
+
+        prioritizedTasks.sort(Comparator.comparing(Task::getStartTime));
+        return prioritizedTasks;
+    }
+
     @Override
     public List<Task> getPrioritizedTasks() {
-        prioritizedTasks.addAll(tasks.values());
-        epics.values().stream()
-             .flatMap(epic -> epic.getPrioritizedSubtasks().stream())
-             .forEach(prioritizedTasks::add);
-        Set<Task> sortedTasks = new TreeSet<>(Comparator.comparing(Task::getStartTime));
-        sortedTasks.addAll(prioritizedTasks);
-        prioritizedTasks.clear();
-        prioritizedTasks.addAll(sortedTasks);
-        return prioritizedTasks;
+        return addToPrioritizedTasks();
     }
 
     @Override
@@ -116,10 +121,6 @@ public class InMemoryTaskManager implements TaskManager {
     public int addNewTask(Epic newEpic) {
         newEpic.setId(currentId);
         currentId++;
-        if (getAllEpics().stream()
-                 .anyMatch(existingTask -> isOverlapping(newEpic, existingTask))) {
-            throw new IllegalArgumentException("Задача пересекается по времени с существующей задачей");
-        }
         epics.put(newEpic.getId(), newEpic);
         historyManager.add(newEpic);
         return newEpic.getId();
@@ -135,7 +136,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
         subtasks.put(newSubtask.getId(), newSubtask);
         historyManager.add(newSubtask);
-        prioritizedTasks.add(newSubtask);
+        addToPrioritizedTasks();
         return newSubtask.getId();
     }
 
@@ -149,7 +150,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
         tasks.put(newTask.getId(), newTask);
         historyManager.add(newTask);
-        prioritizedTasks.add(newTask);
+        addToPrioritizedTasks();
         return newTask.getId();
     }
 
@@ -158,7 +159,7 @@ public class InMemoryTaskManager implements TaskManager {
         Epic tempLink = epics.get(updatedEpic.getId());
         tempLink.setName(updatedEpic.getName());
         tempLink.setDescription(updatedEpic.getDescription());
-        updatePrioritizedTasks();
+        updatePrioritizedTasksForEpic(updatedEpic);
     }
 
     @Override
@@ -167,7 +168,7 @@ public class InMemoryTaskManager implements TaskManager {
         tempLink.setName(updatedSubtask.getName());
         tempLink.setDescription(updatedSubtask.getDescription());
         tempLink.updateState(updatedSubtask.getState());
-        updatePrioritizedTasks();
+        updatePrioritizedTasksForSubtask(updatedSubtask);
     }
 
     @Override
@@ -176,19 +177,34 @@ public class InMemoryTaskManager implements TaskManager {
         tempLink.setName(updatedTask.getName());
         tempLink.setDescription(updatedTask.getDescription());
         tempLink.updateState(updatedTask.getState());
-        updatePrioritizedTasks();
+        updatePrioritizedTasksForTask(updatedTask);
     }
 
-    private void updatePrioritizedTasks() {
-        getPrioritizedTasks().clear();
-        getPrioritizedTasks().addAll(tasks.values());
-        epics.values().stream()
-             .flatMap(epic -> epic.getSubtasks().stream())
-             .forEach(getPrioritizedTasks()::add);
-        Set<Task> sortedTasks = new TreeSet<>(Comparator.comparing(Task::getStartTime));
-        sortedTasks.addAll(getPrioritizedTasks());
-        getPrioritizedTasks().clear();
-        getPrioritizedTasks().addAll(sortedTasks);
+    private void updatePrioritizedTasksForTask(Task task) {
+        prioritizedTasks.remove(task);
+        prioritizedTasks.add(task);
+        Set<Task> sortedSubtasks = new TreeSet<>(Comparator.comparing(Task::getStartTime));
+        sortedSubtasks.add(task);
+        prioritizedTasks.remove(task);
+        prioritizedTasks.addAll(sortedSubtasks);
+    }
+
+    private void updatePrioritizedTasksForSubtask(Subtask subtask) {
+        prioritizedTasks.remove(subtask);
+        prioritizedTasks.add(subtask);
+        Set<Task> sortedSubtasks = new TreeSet<>(Comparator.comparing(Task::getStartTime));
+        sortedSubtasks.add(subtask);
+        prioritizedTasks.remove(subtask);
+        prioritizedTasks.addAll(sortedSubtasks);
+    }
+
+    private void updatePrioritizedTasksForEpic(Epic epic) {
+        prioritizedTasks.removeAll(epic.getSubtasks());
+        prioritizedTasks.addAll(epic.getSubtasks());
+        Set<Task> sortedSubtasks = new TreeSet<>(Comparator.comparing(Task::getStartTime));
+        sortedSubtasks.addAll(epic.getSubtasks());
+        prioritizedTasks.removeAll(epic.getSubtasks());
+        prioritizedTasks.addAll(sortedSubtasks);
     }
 
     @Override

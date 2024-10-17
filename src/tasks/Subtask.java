@@ -32,10 +32,6 @@ public class Subtask extends Task {
         return parentId;
     }
 
-    public LocalDateTime getStartTime() {
-        return startTime;
-    }
-
     @Override
     public String toString() {
         return String.format("%d,%s,%s,%s,%s,%s,%s,%d", id, type, name, state, description, duration, startTime, parentId);

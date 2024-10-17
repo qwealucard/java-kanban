@@ -127,8 +127,7 @@ public class InMemoryTaskManagerTest {
     @Test
     void testGetPrioritizedTasks_EmptyTasks() {
         TaskManager taskManager = new InMemoryTaskManager();
-        List<Task> prioritizedTasks = taskManager.getPrioritizedTasks();
-        assertEquals(0, prioritizedTasks.size());
+        assertEquals(0, taskManager.getPrioritizedTasks().size());
     }
 
     @Test
@@ -138,9 +137,8 @@ public class InMemoryTaskManagerTest {
         Task task = new Task(0, TaskType.TASK, "Task 1", TaskState.NEW, "Description 1", Duration.ofHours(2), startTime);
         taskManager.addNewTask(task);
 
-        List<Task> prioritizedTasks = taskManager.getPrioritizedTasks();
-        assertEquals(1, prioritizedTasks.size());
-        assertEquals(task, prioritizedTasks.get(0));
+        assertEquals(1, taskManager.getPrioritizedTasks().size());
+        assertEquals(task, taskManager.getPrioritizedTasks().get(0));
     }
 
     @Test
@@ -158,11 +156,10 @@ public class InMemoryTaskManagerTest {
         taskManager.addNewTask(task2);
         taskManager.addNewTask(task3);
 
-        List<Task> prioritizedTasks = taskManager.getPrioritizedTasks();
-        assertEquals(3, prioritizedTasks.size());
-        assertEquals(task1, prioritizedTasks.get(0));
-        assertEquals(task2, prioritizedTasks.get(1));
-        assertEquals(task3, prioritizedTasks.get(2));
+        assertEquals(3, taskManager.getPrioritizedTasks().size());
+        assertEquals(task1, taskManager.getPrioritizedTasks().get(0));
+        assertEquals(task2, taskManager.getPrioritizedTasks().get(1));
+        assertEquals(task3, taskManager.getPrioritizedTasks().get(2));
     }
 
     @Test
@@ -179,13 +176,12 @@ public class InMemoryTaskManagerTest {
 
         taskManager.addNewTask(task1);
         taskManager.addNewTask(epic);
-        epic.addSubtask(subtask1);
-        epic.addSubtask(subtask2);
+        epic.addNewTask(subtask1);
+        epic.addNewTask(subtask2);
 
-        List<Task> prioritizedTasks = taskManager.getPrioritizedTasks();
-        assertEquals(3, prioritizedTasks.size());
-        assertEquals(task1, prioritizedTasks.get(0));
-        assertEquals(subtask1, prioritizedTasks.get(2));
-        assertEquals(subtask2, prioritizedTasks.get(1));
+        assertEquals(3, taskManager.getPrioritizedTasks().size());
+        assertEquals(task1, taskManager.getPrioritizedTasks().get(0));
+        assertEquals(subtask1, taskManager.getPrioritizedTasks().get(2));
+        assertEquals(subtask2, taskManager.getPrioritizedTasks().get(1));
     }
 }

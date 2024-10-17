@@ -9,15 +9,12 @@ import java.util.*;
 
 public class Epic extends Task {
     private List<Subtask> subtasks;
-    protected Duration duration;
-    protected LocalDateTime startTime;
-    private LocalDateTime endTime;
-    private TreeSet<Subtask> prioritizedTasks;
+    private PriorityQueue<Subtask> prioritizedTasks;
 
     public Epic(int id, TaskType type, String name, TaskState state, String description, Duration duration, LocalDateTime startTime) {
         super(id, type, name, state, description, duration, startTime);
         this.subtasks = new ArrayList<>();
-        this.prioritizedTasks = new TreeSet<>(Comparator.comparing(Subtask::getStartTime));
+        this.prioritizedTasks = new PriorityQueue<>(Comparator.comparing(Subtask::getStartTime));
         this.startTime = startTime;
         this.duration = duration;
     }
@@ -27,11 +24,12 @@ public class Epic extends Task {
         return subtasks;
     }
 
-    public void addSubtask(Subtask newSubtask) {
+    public void addNewTask(Subtask newSubtask) {
         subtasks.add(newSubtask);
         updateState(newSubtask.getState());
         prioritizedTasks.add(newSubtask);
     }
+
 
     public void removeSubtask(Subtask subtask) {
         if (subtasks.contains(subtask)) {
@@ -63,32 +61,30 @@ public class Epic extends Task {
     }
 
     private Duration calculateDuration() {
-        Duration totalDuration = Duration.ZERO;
-        for (Subtask subtask : subtasks) {
-            totalDuration = totalDuration.plus(subtask.getDuration());
-        }
-        return totalDuration;
+        return subtasks.stream()
+                       .map(Subtask::getDuration)
+                       .reduce(Duration.ZERO, Duration::plus);
     }
 
     private LocalDateTime calculateStartTime() {
         if (subtasks.isEmpty()) {
             return null;
         }
-        LocalDateTime earliestStartTime = subtasks.get(0).getStartTime();
-        for (Subtask subtask : subtasks) {
-            if (subtask.getStartTime().isBefore(earliestStartTime)) {
-                earliestStartTime = subtask.getStartTime();
-            }
-        }
-        return earliestStartTime;
+        return subtasks.stream()
+                       .map(Subtask::getStartTime)
+                       .min(LocalDateTime::compareTo)
+                       .orElse(null);
     }
 
     private LocalDateTime calculateEndTime() {
-        endTime = getEarliestStartTime();
-        for (Subtask subtask : subtasks) {
-            endTime = endTime.plus(subtask.getDuration());
+        if (subtasks == null || subtasks.isEmpty()) {
+            return null;
         }
-        return endTime;
+        Subtask lastSubtask = subtasks.stream()
+                                      .max(Comparator.comparing(Subtask::getStartTime))
+                                      .orElse(null);
+        if (lastSubtask == null) return null;
+        return lastSubtask.getEndTime();
     }
 
     public Duration getTotalDuration() {
