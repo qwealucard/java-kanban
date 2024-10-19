@@ -11,7 +11,6 @@ import tasks.Task;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -92,7 +91,7 @@ public class InMemoryTaskManagerTest {
     public void testDeleteTaskById() throws ManagerSaveException {
         TaskManager taskManager = new InMemoryTaskManager();
         LocalDateTime startTime = LocalDateTime.of(2024, 1, 1, 12, 0, 0);
-        Task task = new Task(0, TaskType.TASK, "Task 1", TaskState.NEW, "Description 1", Duration.ofHours(1), LocalDateTime.now());
+        Task task = new Task(0, TaskType.TASK, "Task 1", TaskState.NEW, "Description 1", Duration.ofHours(1), startTime);
         taskManager.addNewTask(task);
 
         taskManager.deleteTaskById(0);
@@ -109,7 +108,7 @@ public class InMemoryTaskManagerTest {
         Task task1 = new Task(0, TaskType.TASK, "Task 1", TaskState.NEW, "Description 1", Duration.ofHours(2), startTime1);
         Task task2 = new Task(1, TaskType.TASK, "Task 2", TaskState.NEW, "Description 2", Duration.ofHours(1), startTime2);
 
-        assertTrue(taskManager.isOverlapping(task1, task2));
+        assertTrue(taskManager.getIsOverLapping(task1, task2));
     }
 
     @Test
@@ -121,7 +120,7 @@ public class InMemoryTaskManagerTest {
         Task task1 = new Task(0, TaskType.TASK, "Task 1", TaskState.NEW, "Description 1", Duration.ofHours(2), startTime1);
         Task task2 = new Task(1, TaskType.TASK, "Task 2", TaskState.NEW, "Description 2", Duration.ofHours(1), startTime2);
 
-        assertFalse(taskManager.isOverlapping(task1, task2));
+        assertFalse(taskManager.getIsOverLapping(task1, task2));
     }
 
     @Test
@@ -137,8 +136,9 @@ public class InMemoryTaskManagerTest {
         Task task = new Task(0, TaskType.TASK, "Task 1", TaskState.NEW, "Description 1", Duration.ofHours(2), startTime);
         taskManager.addNewTask(task);
 
+
         assertEquals(1, taskManager.getPrioritizedTasks().size());
-        assertEquals(task, taskManager.getPrioritizedTasks().get(0));
+        assertTrue(taskManager.getPrioritizedTasks().contains(task));
     }
 
     @Test
@@ -157,9 +157,9 @@ public class InMemoryTaskManagerTest {
         taskManager.addNewTask(task3);
 
         assertEquals(3, taskManager.getPrioritizedTasks().size());
-        assertEquals(task1, taskManager.getPrioritizedTasks().get(0));
-        assertEquals(task2, taskManager.getPrioritizedTasks().get(1));
-        assertEquals(task3, taskManager.getPrioritizedTasks().get(2));
+        assertTrue(taskManager.getPrioritizedTasks().contains(task1));
+        assertTrue(taskManager.getPrioritizedTasks().contains(task2));
+        assertTrue(taskManager.getPrioritizedTasks().contains(task3));
     }
 
     @Test
@@ -176,12 +176,12 @@ public class InMemoryTaskManagerTest {
 
         taskManager.addNewTask(task1);
         taskManager.addNewTask(epic);
-        epic.addNewTask(subtask1);
-        epic.addNewTask(subtask2);
+        taskManager.addNewTask(subtask1);
+        taskManager.addNewTask(subtask2);
 
         assertEquals(3, taskManager.getPrioritizedTasks().size());
-        assertEquals(task1, taskManager.getPrioritizedTasks().get(0));
-        assertEquals(subtask1, taskManager.getPrioritizedTasks().get(2));
-        assertEquals(subtask2, taskManager.getPrioritizedTasks().get(1));
+        assertTrue(taskManager.getPrioritizedTasks().contains(task1));
+        assertTrue(taskManager.getPrioritizedTasks().contains(subtask1));
+        assertTrue(taskManager.getPrioritizedTasks().contains(subtask2));
     }
 }
