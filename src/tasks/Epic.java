@@ -2,17 +2,22 @@ package tasks;
 
 import savingfiles.TaskType;
 import states.TaskState;
-import java.util.ArrayList;
-import java.util.List;
+
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.*;
 
 public class Epic extends Task {
-    private List<Subtask> subtasks = new ArrayList<Subtask>();
+    private final List<Subtask> subtasks;
 
-    public Epic(int id, TaskType type, String name, TaskState state, String description) {
-        super(id, type, name, state, description);
+    public Epic(int id, TaskType type, String name, TaskState state, String description, Duration duration, LocalDateTime startTime) {
+        super(id, type, name, state, description, duration, startTime);
+        this.subtasks = new ArrayList<>();
+        this.startTime = startTime;
+        this.duration = duration;
     }
 
-    public void addSubtask(Subtask newSubtask) {
+    public void addNewTask(Subtask newSubtask) {
         subtasks.add(newSubtask);
         updateState(newSubtask.getState());
     }
@@ -24,7 +29,7 @@ public class Epic extends Task {
         }
     }
 
-    public void removeAllSubtasks() {
+    public void deleteAllSubtasks() {
         subtasks.clear();
         updateState(TaskState.NEW);
     }
@@ -51,20 +56,41 @@ public class Epic extends Task {
         return subtasks;
     }
 
-    public static Epic fromString(String value) {
-        String[] values = value.split(",");
-        System.out.println(values.length);
-        int id = Integer.parseInt(values[0]);
-        TaskType type = TaskType.valueOf(values[1]);
-        String name = values[2];
-        TaskState state = TaskState.valueOf(values[3]);
-        String description = values[4];
-        return new Epic(id, type, name, state, description);
+    private Duration calculateDuration() {
+        return subtasks.stream()
+                       .map(Subtask::getDuration)
+                       .reduce(Duration.ZERO, Duration::plus);
+    }
+
+    private LocalDateTime calculateStartTime() {
+        return subtasks.stream()
+                       .map(Subtask::getStartTime)
+                       .min(LocalDateTime::compareTo)
+                       .orElse(null);
+    }
+
+    private LocalDateTime calculateEndTime() {
+        return subtasks.stream()
+                       .max(Comparator.comparing(Subtask::getStartTime))
+                       .map(Subtask::getEndTime)
+                       .orElse(null);
+    }
+
+    public Duration getDuration() {
+        return calculateDuration();
+    }
+
+    public LocalDateTime getStartTime() {
+        return calculateStartTime();
+    }
+
+    public LocalDateTime getEndTime() {
+        return calculateEndTime();
     }
 
     @Override
     public String toString() {
-        return String.format("%d,%s,%s,%s,%s", id, type, name, state, description);
+        return String.format("%d,%s,%s,%s,%s,%s,%s", id, type, name, state, description, duration, startTime);
     }
 }
 
