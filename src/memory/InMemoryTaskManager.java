@@ -164,6 +164,9 @@ public class InMemoryTaskManager implements TaskManager {
         savedSubtask.setName(savedSubtask.getName());
         savedSubtask.setDescription(updatedSubtask.getDescription());
         savedSubtask.updateState(updatedSubtask.getState());//При обновлении статуса у сабтаска, изменяется также и статус эпика
+        Epic epic = epics.get(savedSubtask.getParentId());
+        epic.removeSubtask(savedSubtask);
+        epic.addNewTask(updatedSubtask);
         prioritizedTasks.remove(savedSubtask);
         if (isIntersection(updatedSubtask)) {
             prioritizedTasks.add(savedSubtask);
