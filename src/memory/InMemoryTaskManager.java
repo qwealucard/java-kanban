@@ -58,7 +58,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteAllSubtasks() {
         List<Integer> subtaskId = new ArrayList<>(subtasks.keySet());
-        for(int i = subtaskId.size() - 1; i >= 0; i--) {
+        for (int i = subtaskId.size() - 1; i >= 0; i--) {
             historyManager.remove(subtaskId.get(i));
         }
         subtasks.values().forEach(prioritizedTasks::remove);
@@ -221,5 +221,4 @@ public class InMemoryTaskManager implements TaskManager {
     public List<Task> getHistory() {
         return historyManager.getViewedTaskHistory();
     }
-
 }
