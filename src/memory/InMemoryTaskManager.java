@@ -48,7 +48,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteAllTasks() {
         List<Integer> taskId = new ArrayList<>(tasks.keySet());//Здесь требуется удаление с конца, чтобы не столкнуться с ошибкой
-        for (int i = taskId.size() - 1; i >= 0; i--) {//java.lang.IndexOutOfBoundsException: Index 1 out of bounds for length 1
+        for (int i = taskId.size() - 1; i >= 0; i--) { //java.lang.IndexOutOfBoundsException: Index 1 out of bounds for length 1
             historyManager.remove(taskId.get(i));//т.к. при удалении наш список будет сдвигаться в сторону 0, а ForEach этого не учитывает
         }
         tasks.values().forEach(prioritizedTasks::remove);
