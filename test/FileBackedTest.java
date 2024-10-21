@@ -170,9 +170,12 @@ public class FileBackedTest {
     @Test
     public void testLoadFromFileMultipleTasks() throws ManagerSaveException {
         FileBackedTaskManager loadedTaskManager = FileBackedTaskManager.loadFromFile(tempFile);
-        Task task = new Task(0, TaskType.TASK, "Task 1", TaskState.NEW, "Description 1", Duration.ofHours(1), LocalDateTime.now());
-        Epic epic = new Epic(1, TaskType.EPIC, "Epic 1", TaskState.NEW, "Description 2", Duration.ofHours(1), LocalDateTime.now());
-        Subtask subtask = new Subtask(2, TaskType.SUBTASK, "Subtask 1", TaskState.NEW, "Description 3", Duration.ofHours(1), LocalDateTime.now(),1);
+        LocalDateTime startTime1 = LocalDateTime.of(2024, 1, 1, 12, 0, 0);
+        LocalDateTime startTime2 = LocalDateTime.of(2024, 1, 2, 12, 0, 0);
+        LocalDateTime startTime3 = LocalDateTime.of(2024, 1, 3, 12, 0, 0);
+        Task task = new Task(0, TaskType.TASK, "Task 1", TaskState.NEW, "Description 1", Duration.ofHours(1), startTime1);
+        Epic epic = new Epic(1, TaskType.EPIC, "Epic 1", TaskState.NEW, "Description 2", Duration.ofHours(1), startTime2);
+        Subtask subtask = new Subtask(2, TaskType.SUBTASK, "Subtask 1", TaskState.NEW, "Description 3", Duration.ofHours(1), startTime3,1);
 
         loadedTaskManager.addNewTask(task);
         loadedTaskManager.addNewTask(epic);

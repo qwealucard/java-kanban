@@ -17,19 +17,9 @@ public class Epic extends Task {
         this.duration = duration;
     }
 
-    private List<Subtask> updatePrioritizedSubtasks() {
-        if (subtasks == null) {
-            return new ArrayList<>();
-        }
-        List<Subtask> prioritizedSubtasks = new ArrayList<>(subtasks);
-        Collections.sort(prioritizedSubtasks, Comparator.comparing(Subtask::getStartTime));
-        return prioritizedSubtasks;
-    }
-
     public void addNewTask(Subtask newSubtask) {
         subtasks.add(newSubtask);
         updateState(newSubtask.getState());
-        updatePrioritizedSubtasks();
     }
 
     public void removeSubtask(Subtask subtask) {
@@ -37,7 +27,11 @@ public class Epic extends Task {
             subtasks.remove(subtask);
             updateState(TaskState.NEW);
         }
-        updatePrioritizedSubtasks();
+    }
+
+    public void deleteAllSubtasks() {
+        subtasks.clear();
+        updateState(TaskState.NEW);
     }
 
     private TaskState checkState() {
@@ -69,9 +63,6 @@ public class Epic extends Task {
     }
 
     private LocalDateTime calculateStartTime() {
-        if (subtasks.isEmpty()) {
-            return null;
-        }
         return subtasks.stream()
                        .map(Subtask::getStartTime)
                        .min(LocalDateTime::compareTo)
@@ -85,11 +76,11 @@ public class Epic extends Task {
                        .orElse(null);
     }
 
-    public Duration getTotalDuration() {
+    public Duration getDuration() {
         return calculateDuration();
     }
 
-    public LocalDateTime getEarliestStartTime() {
+    public LocalDateTime getStartTime() {
         return calculateStartTime();
     }
 

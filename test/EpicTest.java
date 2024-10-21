@@ -58,8 +58,9 @@ public class EpicTest {
 
     @Test
     void testCalculateDuration_EmptySubtasks() {
+        Duration duration = Duration.ZERO;
         Epic epic = new Epic(0, TaskType.EPIC, "Epic 1", TaskState.NEW, "Description 1", null, null);
-        assertEquals(null, epic.getDuration());
+        assertEquals(duration, epic.getDuration());
     }
 
     @Test
@@ -69,13 +70,13 @@ public class EpicTest {
         epic.addNewTask(new Subtask(2, TaskType.SUBTASK, "Subtask 2", TaskState.NEW, "Description 2", Duration.ofHours(2), LocalDateTime.now(), 0));
 
 
-        assertEquals(Duration.ofHours(3), epic.getTotalDuration());
+        assertEquals(Duration.ofHours(3), epic.getDuration());
     }
 
     @Test
     void testCalculateStartTime_EmptySubtasks() {
         Epic epic = new Epic(0, TaskType.EPIC, "Epic 1", TaskState.NEW, "Description 1", null, null);
-        assertNull(epic.getEarliestStartTime());
+        assertNull(epic.getStartTime());
     }
 
     @Test

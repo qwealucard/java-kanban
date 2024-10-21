@@ -76,15 +76,29 @@ public class InMemoryTaskManagerTest {
     @Test
     public void testDeleteAllTasks() throws ManagerSaveException {
         TaskManager taskManager = new InMemoryTaskManager();
-        LocalDateTime startTime = LocalDateTime.of(2024, 1, 1, 12, 0, 0);
+        LocalDateTime startTime = LocalDateTime.of(2024, 11, 1, 12, 0, 0);
         Task task1 = new Task(0, TaskType.TASK, "Task 1", TaskState.NEW, "Description 1", Duration.ofHours(1), LocalDateTime.now());
         Task task2 = new Task(1, TaskType.TASK, "Task 2", TaskState.NEW, "Description 2", Duration.ofHours(2), startTime);
         taskManager.addNewTask(task1);
         taskManager.addNewTask(task2);
-
         taskManager.deleteAllTasks();
 
         Assertions.assertEquals(0, taskManager.getAllTasks().size(), "После удаления в диспетчере задач не должно быть никаких задач");
+    }
+
+    @Test
+    public void testDeleteAllSubtasks() throws ManagerSaveException {
+        TaskManager taskManager = new InMemoryTaskManager();
+        LocalDateTime startTime = LocalDateTime.of(2024, 11, 1, 12, 0, 0);
+        Epic epic = new Epic(0, TaskType.EPIC, "Epic 1", TaskState.NEW, "Description 1", Duration.ofHours(2), LocalDateTime.now());
+        Subtask subtask1 = new Subtask(0, TaskType.SUBTASK, "Subtask 1", TaskState.NEW, "Description 1", Duration.ofHours(1), LocalDateTime.now(), 0);
+        Subtask subtask2 = new Subtask(1, TaskType.SUBTASK, "Subtask 2", TaskState.NEW, "Description 2", Duration.ofHours(2), startTime, 0);
+        taskManager.addNewTask(epic);
+        taskManager.addNewTask(subtask1);
+        taskManager.addNewTask(subtask2);
+        taskManager.deleteAllSubtasks();
+
+        Assertions.assertEquals(0, taskManager.getAllSubtasks().size(), "После удаления в диспетчере задач не должно быть никаких задач");
     }
 
     @Test
@@ -97,30 +111,6 @@ public class InMemoryTaskManagerTest {
         taskManager.deleteTaskById(0);
 
         Assertions.assertEquals(0, taskManager.getAllTasks().size());
-    }
-
-    @Test
-    void testIsOverlapping_OverlappingTasks() {
-        InMemoryTaskManager taskManager = new InMemoryTaskManager();
-        LocalDateTime startTime1 = LocalDateTime.of(2023, 12, 1, 10, 0, 0);
-        LocalDateTime startTime2 = LocalDateTime.of(2023, 12, 1, 11, 0, 0);
-
-        Task task1 = new Task(0, TaskType.TASK, "Task 1", TaskState.NEW, "Description 1", Duration.ofHours(2), startTime1);
-        Task task2 = new Task(1, TaskType.TASK, "Task 2", TaskState.NEW, "Description 2", Duration.ofHours(1), startTime2);
-
-        assertTrue(taskManager.getIsOverLapping(task1, task2));
-    }
-
-    @Test
-    void testIsOverlapping_NonOverlappingTasks() {
-        InMemoryTaskManager taskManager = new InMemoryTaskManager();
-        LocalDateTime startTime1 = LocalDateTime.of(2023, 12, 1, 10, 0, 0);
-        LocalDateTime startTime2 = LocalDateTime.of(2023, 12, 1, 12, 0, 0);
-
-        Task task1 = new Task(0, TaskType.TASK, "Task 1", TaskState.NEW, "Description 1", Duration.ofHours(2), startTime1);
-        Task task2 = new Task(1, TaskType.TASK, "Task 2", TaskState.NEW, "Description 2", Duration.ofHours(1), startTime2);
-
-        assertFalse(taskManager.getIsOverLapping(task1, task2));
     }
 
     @Test
