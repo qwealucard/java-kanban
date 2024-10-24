@@ -1,7 +1,7 @@
 package main;
 
-import CustomTypeAdapter.DurationTypeAdapter;
-import CustomTypeAdapter.LocalDateTimeAdapter;
+import customtypeadapter.DurationTypeAdapter;
+import customtypeadapter.LocalDateTimeAdapter;
 import serializeanddeserialize.TaskDeserializer;
 import serializeanddeserialize.TaskSerializer;
 import com.google.gson.Gson;
