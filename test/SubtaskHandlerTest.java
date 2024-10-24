@@ -8,8 +8,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import savingfiles.TaskType;
 import states.TaskState;
+import tasks.Epic;
+import tasks.Subtask;
 import tasks.Task;
-
 
 import java.io.IOException;
 import java.net.URI;
@@ -20,10 +21,10 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 
+
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TaskHandlerTest {
-
+public class SubtaskHandlerTest {
     TaskManager manager = new InMemoryTaskManager();
     HttpTaskServer taskServer = new HttpTaskServer(manager);
     Gson gson = HttpTaskServer.getGson();
@@ -40,13 +41,16 @@ public class TaskHandlerTest {
     public void shutDown() {
         taskServer.stop();
     }
+
     @Test
     public void testAddTask() throws IOException, InterruptedException {
-        Task task = new Task(0, TaskType.TASK, "Task 1", TaskState.NEW, "Description 1", Duration.ofHours(1), LocalDateTime.now());
-        String taskJson = gson.toJson(task);
+        Epic epic = new Epic(0, TaskType.EPIC, "Epic 1", TaskState.NEW, "Description 1", Duration.ofHours(1), LocalDateTime.now());
+        manager.addNewTask(epic);
+        Subtask subtask = new Subtask(0, TaskType.SUBTASK, "Subtask 1", TaskState.NEW, "Description 1", Duration.ofHours(1), LocalDateTime.now(), 0);
+        String taskJson = gson.toJson(subtask);
 
         HttpClient client = HttpClient.newHttpClient();
-        URI url = URI.create("http://localhost:8080/tasks");
+        URI url = URI.create("http://localhost:8080/subtasks");
         HttpRequest request = HttpRequest.newBuilder()
                                          .uri(url)
                                          .POST(HttpRequest.BodyPublishers.ofString(taskJson))
@@ -54,25 +58,26 @@ public class TaskHandlerTest {
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        assertEquals(201, response.statusCode());
+        assertEquals(200, response.statusCode());
 
-        List<Task> tasksFromManager = manager.getAllTasks();
+        List<Task> tasksFromManager = manager.getAllSubtasks();
 
         assertNotNull(tasksFromManager, "Задачи не возвращаются");
         assertEquals(1, tasksFromManager.size(), "Некорректное количество задач");
-        assertEquals("Task 1", tasksFromManager.get(0).getName(), "Некорректное имя задачи");
+        assertEquals("Subtask 1", tasksFromManager.get(0).getName(), "Некорректное имя задачи");
     }
 
     @Test
     public void testDeleteTask() throws IOException, InterruptedException {
-        Task task = new Task(0, TaskType.TASK, "Task 1", TaskState.NEW, "Description 1", Duration.ofHours(1), LocalDateTime.now());
-        manager.addNewTask(task);
-
-        int taskId = task.getId();
+        Epic epic = new Epic(0, TaskType.EPIC, "Epic 1", TaskState.NEW, "Description 1", Duration.ofHours(1), LocalDateTime.now());
+        manager.addNewTask(epic);
+        Subtask subtask = new Subtask(0, TaskType.SUBTASK, "Subtask 1", TaskState.NEW, "Description 1", Duration.ofHours(1), LocalDateTime.now(), 0);
+        manager.addNewTask(subtask);
+        int subtaskId = subtask.getId();
 
         HttpClient client = HttpClient.newHttpClient();
 
-        URI url = URI.create("http://localhost:8080/tasks/" + taskId);
+        URI url = URI.create("http://localhost:8080/subtasks/" + subtaskId);
         HttpRequest request = HttpRequest.newBuilder()
                                          .uri(url)
                                          .DELETE()
@@ -81,21 +86,21 @@ public class TaskHandlerTest {
 
         assertEquals(200, response.statusCode());
 
-        List<Task> tasks = manager.getAllTasks();
+        List<Task> tasks = manager.getAllSubtasks();
         assertEquals(0, tasks.size(), "Задача не удалена");
     }
 
     @Test
     public void testGetTaskById() throws IOException, InterruptedException {
-        LocalDateTime startTime = LocalDateTime.of(2023, 12, 1, 10, 0, 0);
-        Task task = new Task(0, TaskType.TASK, "Task 1", TaskState.NEW, "Description 1", Duration.ofHours(1), startTime);
-        manager.addNewTask(task);
-
-        int taskId = task.getId();
+        Epic epic = new Epic(0, TaskType.EPIC, "Epic 1", TaskState.NEW, "Description 1", Duration.ofHours(1), LocalDateTime.now());
+        manager.addNewTask(epic);
+        Subtask subtask = new Subtask(0, TaskType.SUBTASK, "Subtask 1", TaskState.NEW, "Description 1", Duration.ofHours(1), LocalDateTime.now(), 0);
+        manager.addNewTask(subtask);
+        int subtaskId = subtask.getId();
 
         HttpClient client = HttpClient.newHttpClient();
 
-        URI url = URI.create("http://localhost:8080/tasks/" + taskId);
+        URI url = URI.create("http://localhost:8080/subtasks/" + subtaskId);
         HttpRequest request = HttpRequest.newBuilder()
                                          .uri(url)
                                          .GET()
@@ -104,23 +109,23 @@ public class TaskHandlerTest {
 
         assertEquals(200, response.statusCode());
 
-        Task receivedTask = gson.fromJson(response.body(), Task.class);
-        assertEquals(task.getName(), receivedTask.getName(), "Полученная задача не совпадает с исходной");
+        Subtask receivedTask = gson.fromJson(response.body(), Subtask.class);
+        assertEquals(subtask.getName(), receivedTask.getName(), "Полученная задача не совпадает с исходной");
     }
 
     @Test
     public void testUpdateTask() throws IOException, InterruptedException {
-        Task task = new Task(0, TaskType.TASK, "Task 1", TaskState.NEW, "Description 1", Duration.ofHours(1), LocalDateTime.now());
-        manager.addNewTask(task);
-
-        int taskId = task.getId();
-
-        task.setName("Updated Task");
-        String taskJson = gson.toJson(task);
+        Epic epic = new Epic(0, TaskType.EPIC, "Epic 1", TaskState.NEW, "Description 1", Duration.ofHours(1), LocalDateTime.now());
+        manager.addNewTask(epic);
+        Subtask subtask = new Subtask(0, TaskType.SUBTASK, "Subtask 1", TaskState.NEW, "Description 1", Duration.ofHours(1), LocalDateTime.now(), 0);
+        manager.addNewTask(subtask);
+        int subtaskId = subtask.getId();
+        subtask.setName("Updated Task");
+        String taskJson = gson.toJson(subtask);
 
         HttpClient client = HttpClient.newHttpClient();
 
-        URI url = URI.create("http://localhost:8080/tasks/" + taskId);
+        URI url = URI.create("http://localhost:8080/subtasks/" + subtaskId);
         HttpRequest request = HttpRequest.newBuilder()
                                          .uri(url)
                                          .POST(HttpRequest.BodyPublishers.ofString(taskJson))
@@ -129,41 +134,34 @@ public class TaskHandlerTest {
 
         assertEquals(200, response.statusCode());
 
-        Task updatedTask = manager.getTaskByID(taskId);
+        Subtask updatedTask = manager.getSubtaskByID(subtaskId);
         assertEquals("Updated Task", updatedTask.getName(), "Задача не обновлена");
     }
 
     @Test
     public void testGetTasks() throws IOException, InterruptedException {
-        LocalDateTime startTime = LocalDateTime.of(2023, 12, 1, 10, 0, 0);
-        Task task1 = new Task(0, TaskType.TASK, "Task 1", TaskState.NEW, "Description 1", Duration.ofHours(1), startTime);
-        Task task2 = new Task(0, TaskType.TASK, "Task 2", TaskState.NEW, "Description 2", Duration.ofHours(2), LocalDateTime.now());
-        manager.addNewTask(task1);
-        manager.addNewTask(task2);
+        LocalDateTime startTime1 = LocalDateTime.of(2023, 12, 1, 10, 0, 0);
+        LocalDateTime startTime2 = LocalDateTime.of(2022, 12, 1, 10, 0, 0);
+
+        Epic epic = new Epic(0, TaskType.EPIC, "Epic 1", TaskState.NEW, "Description 1", Duration.ofHours(1), startTime2);
+        manager.addNewTask(epic);
+        Subtask subtask1 = new Subtask(0, TaskType.SUBTASK, "Subtask 1", TaskState.NEW, "Description 1", Duration.ofHours(1), startTime1, 0);
+        Subtask subtask2 = new Subtask(1, TaskType.SUBTASK, "Subtask 2", TaskState.NEW, "Description 1", Duration.ofHours(1), LocalDateTime.now(), 0);
+        manager.addNewTask(subtask1);
+        manager.addNewTask(subtask2);
 
         HttpClient client = HttpClient.newHttpClient();
-        URI url = URI.create("http://localhost:8080/tasks");
+        URI url = URI.create("http://localhost:8080/subtasks");
         HttpRequest request = HttpRequest.newBuilder()
                                          .uri(url)
                                          .GET()
                                          .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
+
         assertEquals(200, response.statusCode());
 
-        List<Task> tasks = gson.fromJson(response.body(), new TypeToken<List<Task>>() {}.getType());
+        List<Subtask> tasks = gson.fromJson(response.body(), new TypeToken<List<Subtask>>() {}.getType());
         assertEquals(2, tasks.size(), "Некорректное количество задач в списке");
-    }
-
-    @Test
-    public void testGetTaskById_NotFound() throws IOException, InterruptedException {
-        URI url = URI.create("http://localhost:8080/tasks/1");
-        HttpRequest request = HttpRequest.newBuilder()
-                                         .uri(url)
-                                         .GET()
-                                         .build();
-        HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
-
-        assertEquals(404, response.statusCode());
     }
 }

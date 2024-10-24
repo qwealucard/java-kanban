@@ -1,27 +1,19 @@
 package handlers;
 
-import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import interfaces.HistoryManager;
 import interfaces.TaskManager;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 
-public class BaseHttpHandler implements HttpHandler {
+public abstract class BaseHttpHandler implements HttpHandler {
 
     protected TaskManager taskManager;
-    protected HistoryManager historyManager;
 
-    @Override
-    public void handle(HttpExchange httpExchange) throws IOException {
-
+    public BaseHttpHandler(TaskManager taskManager) {
+        this.taskManager = taskManager;
     }
-
 
     protected void sendText(HttpExchange h, String text) throws IOException {
         byte[] resp = text.getBytes(StandardCharsets.UTF_8);
@@ -41,14 +33,17 @@ public class BaseHttpHandler implements HttpHandler {
         h.getResponseBody().close();
     }
 
+    protected void sendBadRequest(HttpExchange exchange) throws IOException {
+        exchange.sendResponseHeaders(400, 0);
+        exchange.getResponseBody().close();
+    }
+
+    protected void sendInternalServerError(HttpExchange exchange) throws IOException {
+        exchange.sendResponseHeaders(500, 0);
+        exchange.getResponseBody().close();
+    }
+
     protected String readBody(HttpExchange exchange) throws IOException {
-        StringBuilder sb = new StringBuilder();
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(exchange.getRequestBody(), StandardCharsets.UTF_8))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                sb.append(line);
-            }
-        }
-        return sb.toString();
+        return new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
     }
 }

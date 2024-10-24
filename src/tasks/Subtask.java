@@ -18,12 +18,6 @@ public class Subtask extends Task {
         this.startTime = startTime;
     }
 
-    @Override
-    public void updateState(TaskState newState) {
-        state = newState;
-        parent.updateState(newState);
-    }
-
     public Epic getParent() {
         return parent;
     }
