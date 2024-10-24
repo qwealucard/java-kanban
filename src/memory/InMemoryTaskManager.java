@@ -116,9 +116,6 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public int addNewTask(Subtask newSubtask) {
         int epicId = newSubtask.getParentId();
-        if (!epics.containsKey(epicId)) {
-            throw new IllegalArgumentException("No epic by id=%s".formatted(epicId));
-        }
         if (isIntersection(newSubtask)) {
             throw new IllegalArgumentException("Задача пересекается по времени с существующей задачей");
         }
@@ -157,14 +154,13 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void updateTask(Subtask updatedSubtask) {
-        if (!tasks.containsKey(updatedSubtask.getId())) {
-            throw new IllegalArgumentException("No Subtask by id=%s".formatted(updatedSubtask.getId()));
-        }
+
         Subtask savedSubtask = subtasks.get(updatedSubtask.getId());
         savedSubtask.setName(savedSubtask.getName());
         savedSubtask.setDescription(updatedSubtask.getDescription());
-        savedSubtask.updateState(updatedSubtask.getState());//При обновлении статуса у сабтаска, изменяется также и статус эпика
+        savedSubtask.updateState(updatedSubtask.getState());
         Epic epic = epics.get(savedSubtask.getParentId());
+        epic.updateState(updatedSubtask.getState());
         epic.removeSubtask(savedSubtask);
         epic.addNewTask(updatedSubtask);
         prioritizedTasks.remove(savedSubtask);
@@ -211,7 +207,8 @@ public class InMemoryTaskManager implements TaskManager {
     public void deleteSubtaskById(int id) {
         prioritizedTasks.remove(getSubtaskByID(id));
         Subtask tempSubtask = subtasks.remove(id);
-        tempSubtask.getParent().removeSubtask(tempSubtask);
+        Epic parent = getEpicByID(tempSubtask.getParentId());
+        parent.removeSubtask(tempSubtask);
         historyManager.remove(id);
     }
 
