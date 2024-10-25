@@ -47,9 +47,7 @@ public class EpicHandler extends BaseHttpHandler implements HttpHandler {
         if (Pattern.matches("^/epics$", path)) {
             try {
                 List<Task> epics = taskManager.getAllEpics();
-                sendText(exchange, gson.toJson(epics));
-                exchange.sendResponseHeaders(200, 0);
-                exchange.getResponseBody().close();
+                sendText(exchange, gson.toJson(epics), 200);
             } catch (Exception e) {
                 e.printStackTrace();
                 sendInternalServerError(exchange);
@@ -59,9 +57,7 @@ public class EpicHandler extends BaseHttpHandler implements HttpHandler {
                 int id = Integer.parseInt(path.substring(path.lastIndexOf('/') + 1));
                 Epic epic = taskManager.getEpicByID(id);
                 if (epic != null) {
-                    sendText(exchange, gson.toJson(epic));
-                    exchange.sendResponseHeaders(200, 0);
-                    exchange.getResponseBody().close();
+                    sendText(exchange, gson.toJson(epic), 200);
                 } else {
                     sendNotFound(exchange);
                 }
@@ -78,9 +74,7 @@ public class EpicHandler extends BaseHttpHandler implements HttpHandler {
                 Epic epic = taskManager.getEpicByID(epicId);
                 if (epic != null) {
                     List<Subtask> subtasks = taskManager.getSubtasksByEpic(epic);
-                    sendText(exchange, gson.toJson(subtasks));
-                    exchange.sendResponseHeaders(200, 0);
-                    exchange.getResponseBody().close();
+                    sendText(exchange, gson.toJson(subtasks), 200);
                 } else {
                     sendNotFound(exchange);
                 }
@@ -102,9 +96,7 @@ public class EpicHandler extends BaseHttpHandler implements HttpHandler {
                 String requestBody = readBody(exchange);
                 Epic epic = gson.fromJson(requestBody, Epic.class);
                 taskManager.addNewTask(epic);
-                sendText(exchange, gson.toJson(epic));
-                exchange.sendResponseHeaders(201, 0);
-                exchange.getResponseBody().close();
+                sendText(exchange, gson.toJson(epic), 201);
 
             } catch (JsonSyntaxException e) {
                 e.printStackTrace();

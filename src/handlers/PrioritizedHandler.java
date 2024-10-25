@@ -38,9 +38,7 @@ public class PrioritizedHandler extends BaseHttpHandler implements HttpHandler {
         if (Pattern.matches("^/prioritized$", path)) {
             try {
                 List<Task> tasks = taskManager.getPrioritizedTasks();
-                sendText(exchange, gson.toJson(tasks));
-                exchange.sendResponseHeaders(200, 0);
-                exchange.getResponseBody().close();
+                sendText(exchange, gson.toJson(tasks), 200);
             } catch (Exception e) {
                 e.printStackTrace();
                 sendInternalServerError(exchange);

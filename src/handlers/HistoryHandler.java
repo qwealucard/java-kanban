@@ -38,9 +38,7 @@ public class HistoryHandler extends BaseHttpHandler implements HttpHandler {
         if (Pattern.matches("^/history$", path)) {
             try {
                 List<Task> tasks = taskManager.getHistory();
-                sendText(exchange, gson.toJson(tasks));
-                exchange.sendResponseHeaders(200, 0);
-                exchange.getResponseBody().close();
+                sendText(exchange, gson.toJson(tasks), 200);
             } catch (Exception e) {
                 e.printStackTrace();
                 sendInternalServerError(exchange);

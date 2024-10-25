@@ -45,9 +45,7 @@ public class TaskHandler extends BaseHttpHandler implements HttpHandler {
         if (Pattern.matches("^/tasks$", path)) {
             try {
                 List<Task> tasks = taskManager.getAllTasks();
-                sendText(exchange, gson.toJson(tasks));
-                exchange.sendResponseHeaders(200, 0);
-                exchange.getResponseBody().close();
+                sendText(exchange, gson.toJson(tasks),  200);
             } catch (Exception e) {
                 e.printStackTrace();
                 sendInternalServerError(exchange);
@@ -56,11 +54,8 @@ public class TaskHandler extends BaseHttpHandler implements HttpHandler {
             try {
                 int id = Integer.parseInt(path.substring(path.lastIndexOf('/') + 1));
                 Task task = taskManager.getTaskByID(id);
-
                 if (task != null) {
-                    sendText(exchange, gson.toJson(task));
-                    exchange.sendResponseHeaders(200, 0);
-                    exchange.getResponseBody().close();
+                    sendText(exchange, gson.toJson(task), 200);
                 } else {
                     sendNotFound(exchange);
                 }
@@ -82,10 +77,7 @@ public class TaskHandler extends BaseHttpHandler implements HttpHandler {
                 String requestBody = readBody(exchange);
                 Task newTask = gson.fromJson(requestBody, Task.class);
                 taskManager.addNewTask(newTask);
-
-                exchange.sendResponseHeaders(201, 0);
-                exchange.getResponseBody().close();
-
+                sendText(exchange, gson.toJson(newTask), 201);
             } catch (JsonSyntaxException e) {
                 e.printStackTrace();
                 sendBadRequest(exchange);
@@ -102,9 +94,7 @@ public class TaskHandler extends BaseHttpHandler implements HttpHandler {
                 String requestBody = readBody(exchange);
                 Task updatedTask = gson.fromJson(requestBody, Task.class);
                 taskManager.updateTask(updatedTask);
-                sendText(exchange, gson.toJson(updatedTask));
-                exchange.sendResponseHeaders(201, 0);
-                exchange.getResponseBody().close();
+                sendText(exchange, gson.toJson(updatedTask), 201);
             } catch (NumberFormatException e) {
                 e.printStackTrace();
                 sendNotFound(exchange);
