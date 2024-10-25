@@ -58,7 +58,7 @@ public class SubtaskHandlerTest {
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        assertEquals(200, response.statusCode());
+        assertEquals(201, response.statusCode());
 
         List<Task> tasksFromManager = manager.getAllSubtasks();
 
@@ -132,7 +132,7 @@ public class SubtaskHandlerTest {
                                          .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        assertEquals(200, response.statusCode());
+        assertEquals(201, response.statusCode());
 
         Subtask updatedTask = manager.getSubtaskByID(subtaskId);
         assertEquals("Updated Task", updatedTask.getName(), "Задача не обновлена");
