@@ -1,5 +1,8 @@
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import customtypeadapter.DurationTypeAdapter;
+import customtypeadapter.LocalDateTimeAdapter;
 import interfaces.TaskManager;
 import main.HttpTaskServer;
 import memory.InMemoryTaskManager;
@@ -7,6 +10,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import savingfiles.TaskType;
+import serializeanddeserialize.TaskDeserializer;
+import serializeanddeserialize.TaskSerializer;
 import states.TaskState;
 import tasks.Task;
 
@@ -23,8 +28,19 @@ import java.util.List;
 
 public class HistoryHandlerTest {
     TaskManager manager = new InMemoryTaskManager();
-    HttpTaskServer taskServer = new HttpTaskServer(manager);
-    Gson gson = HttpTaskServer.getGson();
+    HttpTaskServer taskServer = new HttpTaskServer(8080,
+            "/tasks",
+            "/subtasks",
+            "/epics",
+            "/history",
+            "/prioritized",
+            manager);
+    Gson gson = new GsonBuilder()
+            .registerTypeAdapter(Duration.class, new DurationTypeAdapter())
+            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
+            .registerTypeAdapter(Task.class, new TaskSerializer())
+            .registerTypeAdapter(Task.class, new TaskDeserializer())
+            .create();
 
     @BeforeEach
     public void setUp() throws IOException {
@@ -57,7 +73,8 @@ public class HistoryHandlerTest {
 
         assertEquals(200, response.statusCode());
 
-        List<Task> tasks = gson.fromJson(response.body(), new TypeToken<List<Task>>() {}.getType());
+        List<Task> tasks = gson.fromJson(response.body(), new TypeToken<List<Task>>() {
+        }.getType());
         assertEquals(2, tasks.size(), "Неверное количество задач в истории");
     }
 }

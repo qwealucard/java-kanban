@@ -1,5 +1,6 @@
 package handlers;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -11,12 +12,13 @@ import java.io.IOException;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import static main.HttpTaskServer.gson;
-
 public class SubtaskHandler extends BaseHttpHandler implements HttpHandler {
 
-    public SubtaskHandler(TaskManager taskManager) {
+    private final Gson gson;
+
+    public SubtaskHandler(TaskManager taskManager, Gson gson) {
         super(taskManager);
+        this.gson = gson;
     }
 
     @Override
@@ -28,13 +30,25 @@ public class SubtaskHandler extends BaseHttpHandler implements HttpHandler {
 
         switch (requestMethod) {
             case "GET":
-                handleGetRequests(path, exchange);
+                try {
+                    handleGetRequests(path, exchange);
+                } catch (NotFoundException e) {
+                    throw new RuntimeException(e);
+                }
                 break;
             case "POST":
-                handlePostRequests(path, exchange);
+                try {
+                    handlePostRequests(path, exchange);
+                } catch (NotFoundException | TaskConflictException e) {
+                    throw new RuntimeException(e);
+                }
                 break;
             case "DELETE":
-                handleDeleteRequests(path, exchange);
+                try {
+                    handleDeleteRequests(path, exchange);
+                } catch (NotFoundException e) {
+                    throw new RuntimeException(e);
+                }
                 break;
             default:
                 sendNotFound(exchange);
@@ -42,14 +56,15 @@ public class SubtaskHandler extends BaseHttpHandler implements HttpHandler {
         }
     }
 
-    private void handleGetRequests(String path, HttpExchange exchange) throws IOException {
+    private void handleGetRequests(String path, HttpExchange exchange) throws IOException, NotFoundException {
         if (path.equals("/subtasks")) {
             try {
                 List<Task> subtasks = taskManager.getAllSubtasks();
                 sendText(exchange, gson.toJson(subtasks), 200);
             } catch (Exception e) {
-                e.printStackTrace();
                 sendInternalServerError(exchange);
+                throw new IOException("Ошибка при получении всех сабтасков", e);
+
             }
         } else if (Pattern.matches("^/subtasks/\\d+$", path)) {
             try {
@@ -61,18 +76,21 @@ public class SubtaskHandler extends BaseHttpHandler implements HttpHandler {
                     sendNotFound(exchange);
                 }
             } catch (NumberFormatException e) {
-                e.printStackTrace();
                 sendBadRequest(exchange);
+                throw new IllegalArgumentException("Неверный формат ID сабтаска", e);
+
             } catch (Exception e) {
-                e.printStackTrace();
                 sendInternalServerError(exchange);
+                throw new IOException("Ошибка при получении сабтаска по ID", e);
+
             }
         } else {
             sendNotFound(exchange);
+            throw new NotFoundException("Ресурс не найден");
         }
     }
 
-    private void handlePostRequests(String path, HttpExchange exchange) throws IOException {
+    private void handlePostRequests(String path, HttpExchange exchange) throws IOException, NotFoundException, TaskConflictException {
         if (Pattern.matches("^/subtasks$", path)) {
             try {
                 String requestBody = readBody(exchange);
@@ -80,14 +98,16 @@ public class SubtaskHandler extends BaseHttpHandler implements HttpHandler {
                 taskManager.addNewTask(subtask);
                 sendText(exchange, gson.toJson(subtask), 201);
             } catch (JsonSyntaxException e) {
-                e.printStackTrace();
                 sendBadRequest(exchange);
-            } catch (IOException e) {
-                e.printStackTrace();
-                sendHasInteractions(exchange);
+                throw new IllegalArgumentException("Неверный формат JSON", e);
             } catch (Exception e) {
-                e.printStackTrace();
-                sendInternalServerError(exchange);
+                if (e.getCause() instanceof TaskConflictException) {
+                    sendHasInteractions(exchange);
+                    throw new TaskConflictException("Пересечение задач по времени");
+                } else {
+                    sendInternalServerError(exchange);
+                    throw new IOException("Ошибка при создании таска", e);
+                }
             }
         } else if (Pattern.matches("^/subtasks/\\d+$", path)) {
             try {
@@ -96,21 +116,24 @@ public class SubtaskHandler extends BaseHttpHandler implements HttpHandler {
                 taskManager.updateTask(updatedTask);
                 sendText(exchange, gson.toJson(updatedTask), 201);
             } catch (NumberFormatException e) {
-                e.printStackTrace();
                 sendNotFound(exchange);
-            } catch (IOException e) {
-                e.printStackTrace();
-                sendHasInteractions(exchange);
+                throw new IllegalArgumentException("Неверный формат ID задачи", e);
             } catch (Exception e) {
-                e.printStackTrace();
-                sendInternalServerError(exchange);
+                if (e.getCause() instanceof TaskConflictException) {
+                    sendHasInteractions(exchange);
+                    throw new TaskConflictException("Пересечение задач по времени");
+                } else {
+                    sendInternalServerError(exchange);
+                    throw new IOException("Ошибка при создании таска", e);
+                }
             }
         } else {
             sendNotFound(exchange);
+            throw new NotFoundException("Ресурс не найден");
         }
     }
 
-    private void handleDeleteRequests(String path, HttpExchange exchange) throws IOException {
+    private void handleDeleteRequests(String path, HttpExchange exchange) throws IOException, NotFoundException {
         if (Pattern.matches("^/subtasks/\\d+$", path)) {
             try {
                 int id = Integer.parseInt(path.substring(path.lastIndexOf('/') + 1));
@@ -118,14 +141,15 @@ public class SubtaskHandler extends BaseHttpHandler implements HttpHandler {
                 exchange.sendResponseHeaders(200, 0);
                 exchange.getResponseBody().close();
             } catch (NumberFormatException e) {
-                e.printStackTrace();
                 sendBadRequest(exchange);
+                throw new IllegalArgumentException("Неверный формат ID сабтаска", e);
             } catch (Exception e) {
-                e.printStackTrace();
                 sendInternalServerError(exchange);
+                throw new IOException("Ошибка при удалении сабтаска", e);
             }
         } else {
             sendNotFound(exchange);
+            throw new NotFoundException("Ресурс не найден");
         }
     }
 }
